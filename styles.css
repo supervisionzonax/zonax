@@ -167,9 +167,9 @@ header {
     box-shadow: 0 4px 8px rgba(151, 32, 68, 0.3);
 }
 
-/* Main Content - CORREGIDO: Espaciado mínimo */
+/* Main Content - CORREGIDO: Espaciado mínimo absoluto */
 .main-content {
-    padding: 5px 0;
+    padding: 0;
     flex: 1;
     min-height: calc(100vh - 150px);
     display: flex;
@@ -183,7 +183,7 @@ header {
     align-items: center;
     min-height: 50vh;
     margin: 0;
-    padding: 5px 0;
+    padding: 0;
     flex: 1;
 }
 
@@ -256,46 +256,54 @@ header {
     color: var(--sec-dark-gray);
 }
 
-/* Hero Section - CORREGIDO: Espaciado uniforme para TODAS las pestañas */
+/* Hero Section - CORREGIDO COMPLETAMENTE: Espaciado mínimo */
 .hero {
     background-color: white;
     border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    margin-bottom: 15px;
+    padding: 8px 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin: 0 0 8px 0; /* ELIMINADO margen superior */
     text-align: center;
-    margin-top: 0;
+}
+
+/* HERO ESPECIAL para todas las pestañas - MÍNIMO ESPACIO */
+.eventos-hero,
+.repositorio-hero,
+.trimestral-hero,
+.ctz-hero {
+    margin: 0 0 6px 0 !important; /* ELIMINADO margen superior */
+    padding: 6px 10px !important;
 }
 
 .hero h2 {
     color: var(--sec-burgundy);
-    margin-bottom: 8px;
-    font-size: 1.5rem;
+    margin-bottom: 4px;
+    font-size: 1.3rem;
 }
 
 .hero p {
     color: var(--sec-dark-gray);
     max-width: 800px;
-    margin: 0 auto 10px;
-    font-size: 0.9rem;
+    margin: 0 auto 4px;
+    font-size: 0.85rem;
 }
 
 .turn-info {
     background-color: var(--sec-gray);
-    padding: 10px;
+    padding: 6px;
     border-radius: 6px;
-    margin-top: 10px;
+    margin-top: 6px;
 }
 
 .turn-info h3 {
     color: var(--sec-burgundy);
-    margin-bottom: 6px;
-    font-size: 1rem;
+    margin-bottom: 3px;
+    font-size: 0.95rem;
 }
 
 .turn-info p {
-    margin-bottom: 4px;
-    font-size: 0.85rem;
+    margin-bottom: 2px;
+    font-size: 0.8rem;
 }
 
 /* Navigation Tabs */
@@ -305,6 +313,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
+    padding: 0;
 }
 
 .nav-tabs {
@@ -324,7 +333,7 @@ header {
 
 .nav-tabs a {
     display: block;
-    padding: 12px 16px;
+    padding: 10px 14px;
     color: #555;
     text-decoration: none;
     border-bottom: 3px solid transparent;
@@ -344,6 +353,8 @@ header {
 /* Tab Content */
 .tab-content {
     display: none;
+    padding: 0;
+    margin: 0;
 }
 
 .tab-content.active {
@@ -354,20 +365,21 @@ header {
 .dashboard {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 15px;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
 .school-view-container {
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .school-view-card {
     width: 100%;
     max-width: 100%;
+    margin: 0;
 }
 
 .card {
@@ -377,6 +389,7 @@ header {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
+    margin: 0;
 }
 
 .card:hover {
@@ -387,32 +400,32 @@ header {
 .card-header {
     background-color: var(--sec-burgundy);
     color: white;
-    padding: 12px 15px;
+    padding: 10px 12px;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 .card-body {
-    padding: 15px;
+    padding: 10px;
 }
 
 .school-info {
     display: flex;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .school-icon {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     background-color: var(--sec-gray);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 12px;
+    margin-right: 10px;
     color: var(--sec-burgundy);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     flex-shrink: 0;
 }
 
@@ -423,51 +436,51 @@ header {
 
 .school-details h3 {
     color: var(--sec-dark-burgundy);
-    margin-bottom: 4px;
-    font-size: 1rem;
+    margin-bottom: 3px;
+    font-size: 0.95rem;
     word-wrap: break-word;
 }
 
 .school-details p {
     color: #666;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 .turno-status {
-    margin-top: 12px;
+    margin-top: 8px;
 }
 
 .turno-status h4 {
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     color: var(--sec-dark-gray);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .upload-status {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    padding: 10px;
+    margin-bottom: 6px;
+    padding: 6px;
     background-color: #ffffff;
     border-radius: 6px;
     border: 1px solid #eee;
     transition: all 0.3s ease;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 5px;
 }
 
 .status {
     display: inline-flex;
     align-items: center;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 16px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 500;
-    min-width: 80px;
+    min-width: 70px;
     justify-content: center;
     white-space: nowrap;
     flex-shrink: 0;
@@ -494,7 +507,7 @@ header {
 .status-icons {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     flex-wrap: wrap;
     justify-content: flex-end;
 }
@@ -503,16 +516,16 @@ header {
     background: none;
     border: none;
     color: var(--sec-burgundy);
-    font-size: 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
-    padding: 6px;
+    padding: 5px;
     transition: color 0.3s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    min-width: 36px;
-    min-height: 36px;
+    min-width: 32px;
+    min-height: 32px;
 }
 
 .view-file-btn:hover, .btn-icon:hover {
@@ -534,8 +547,8 @@ header {
     background: transparent;
     border: 1px solid var(--sec-burgundy);
     color: var(--sec-burgundy);
-    padding: 6px 10px;
-    font-size: 0.75rem;
+    padding: 5px 8px;
+    font-size: 0.7rem;
     white-space: nowrap;
 }
 
@@ -547,12 +560,12 @@ header {
 .status-container {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
 }
 
 .file-date {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: #666;
     white-space: nowrap;
 }
@@ -561,31 +574,31 @@ header {
 .merge-section {
     background-color: white;
     border-radius: 8px;
-    padding: 15px;
+    padding: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     text-align: center;
 }
 
 .merge-section h3 {
     color: var(--sec-burgundy);
-    margin-bottom: 12px;
-    font-size: 1.2rem;
+    margin-bottom: 8px;
+    font-size: 1rem;
 }
 
 .merge-action {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .spinner {
     display: none;
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     border: 3px solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
     border-top-color: var(--sec-burgundy);
@@ -597,14 +610,14 @@ header {
 }
 
 .consolidados-list {
-    margin-top: 12px;
+    margin-top: 8px;
     text-align: left;
 }
 
 .consolidados-list h4 {
     color: var(--sec-burgundy);
-    margin-bottom: 8px;
-    font-size: 0.9rem;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
 }
 
 .consolidados-list ul {
@@ -612,49 +625,48 @@ header {
 }
 
 .consolidados-list li {
-    padding: 8px;
+    padding: 5px;
     border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
-    font-size: 0.8rem;
+    gap: 5px;
+    font-size: 0.75rem;
 }
 
-/* Destinatarios Section */
+/* Destinatarios Section - ESTILO UNIFICADO */
 .destinatarios-container {
     background-color: white;
     border-radius: 8px;
-    padding: 15px;
+    padding: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .destinatarios-container h3 {
     color: var(--sec-burgundy);
-    margin-bottom: 8px;
-    font-size: 1.1rem;
+    margin-bottom: 5px;
+    font-size: 1rem;
 }
 
 .destinatarios-container p {
     color: #666;
-    margin-bottom: 12px;
-    font-size: 0.85rem;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
 }
 
 .destinatarios-list {
-    margin: 12px 0;
+    margin: 8px 0;
 }
 
 .destinatario-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 10px;
+    padding: 8px 6px;
     border-bottom: 1px solid #eee;
     transition: background-color 0.2s;
-    flex-wrap: wrap;
     gap: 8px;
 }
 
@@ -662,48 +674,154 @@ header {
     background-color: #f9f9f9;
 }
 
+.destinatario-checkbox {
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.destinatario-checkbox input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.destinatario-checkbox input[type="checkbox"]:checked + .checkmark {
+    background-color: var(--sec-burgundy);
+    border-color: var(--sec-burgundy);
+}
+
+.destinatario-checkbox input[type="checkbox"]:checked + .checkmark::after {
+    content: "✓";
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+}
+
 .destinatario-info {
     flex-grow: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.destinatario-email {
+    font-weight: 500;
+    color: #333;
     font-size: 0.85rem;
-    min-width: 0;
+}
+
+.destinatario-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-badge {
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.status-active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-inactive {
+    background-color: #f8d7da;
+    color: #721c24;
 }
 
 .destinatario-actions {
     display: flex;
-    gap: 6px;
+    gap: 5px;
     flex-shrink: 0;
+}
+
+.destinatarios-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #eee;
+}
+
+.destinatarios-header h4 {
+    color: var(--sec-burgundy);
+    margin: 0;
+    font-size: 1rem;
+}
+
+.destinatarios-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.destinatarios-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.selection-info {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 500;
 }
 
 .form-inline {
     display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
+    gap: 5px;
+    margin-bottom: 6px;
     flex-wrap: wrap;
 }
 
 .form-inline .form-control {
     flex-grow: 1;
     min-width: 150px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+}
+
+/* Estados de los checkboxes */
+.destinatario-checkbox input[type="checkbox"]:focus + .checkmark {
+    box-shadow: 0 0 0 2px rgba(151, 32, 68, 0.2);
 }
 
 /* History Section */
 .history-section {
     background-color: white;
     border-radius: 8px;
-    padding: 15px;
+    padding: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .history-section h3 {
     color: var(--sec-burgundy);
-    margin-bottom: 12px;
-    padding-bottom: 8px;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
     border-bottom: 1px solid #eee;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .history-table-container {
@@ -722,10 +840,10 @@ header {
 
 .history-table th,
 .history-table td {
-    padding: 8px 10px;
+    padding: 5px 6px;
     text-align: left;
     border-bottom: 1px solid #eaeaea;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 .history-table th {
@@ -760,16 +878,16 @@ header {
 
 .mobile-turno-info {
     display: none;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: #666;
-    margin-top: 3px;
+    margin-top: 2px;
 }
 
 .desktop-only {
     display: table-cell;
 }
 
-/* Events Section - CORREGIDO: Espaciado igual que las demás pestañas */
+/* Events Section - CORREGIDO: Espaciado mínimo */
 .events-section {
     margin-top: 0;
 }
@@ -777,8 +895,8 @@ header {
 .events-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 15px;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
 .event-card {
@@ -788,6 +906,7 @@ header {
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     transition: transform 0.3s ease;
     width: 100%;
+    margin: 0;
 }
 
 .event-card:hover {
@@ -795,7 +914,7 @@ header {
 }
 
 .event-image {
-    height: 140px;
+    height: 130px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -803,26 +922,26 @@ header {
 }
 
 .event-content {
-    padding: 15px;
+    padding: 10px;
 }
 
 .event-date {
     color: var(--sec-burgundy);
     font-weight: 500;
-    margin-bottom: 6px;
-    font-size: 0.85rem;
+    margin-bottom: 5px;
+    font-size: 0.8rem;
 }
 
 .event-title {
     color: #333;
-    margin-bottom: 8px;
-    font-size: 1rem;
+    margin-bottom: 5px;
+    font-size: 0.95rem;
 }
 
 .event-description {
     color: #666;
-    margin-bottom: 10px;
-    font-size: 0.85rem;
+    margin-bottom: 6px;
+    font-size: 0.8rem;
 }
 
 /* CTZ Section */
@@ -833,26 +952,26 @@ header {
 .ctz-content {
     background: white;
     border-radius: 8px;
-    padding: 15px;
+    padding: 10px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .ctz-content h3 {
     color: var(--sec-burgundy);
-    margin-bottom: 12px;
-    font-size: 1.1rem;
+    margin-bottom: 8px;
+    font-size: 1rem;
 }
 
 .ctz-item {
     display: flex;
     align-items: flex-start;
-    padding: 15px;
+    padding: 10px;
     border: 1px solid #eee;
     border-radius: 6px;
     transition: all 0.3s ease;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
 }
 
 .ctz-item:hover {
@@ -865,8 +984,8 @@ header {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     background-color: var(--sec-burgundy);
     color: white;
     border-radius: 6px;
@@ -874,13 +993,13 @@ header {
 }
 
 .ctz-dia {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
     line-height: 1;
 }
 
 .ctz-mes {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
 }
 
@@ -891,43 +1010,43 @@ header {
 
 .ctz-info h4 {
     color: #333;
-    margin-bottom: 6px;
-    font-size: 0.9rem;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
     text-align: left;
 }
 
 .ctz-horario {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #666;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     text-align: left;
 }
 
 .ctz-documents {
     background: white;
     border-radius: 8px;
-    padding: 15px;
+    padding: 10px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .ctz-documents h3 {
     color: var(--sec-burgundy);
-    margin-bottom: 8px;
-    font-size: 1.1rem;
+    margin-bottom: 5px;
+    font-size: 1rem;
 }
 
 .ctz-documents p {
     color: #666;
-    margin-bottom: 12px;
-    font-size: 0.85rem;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
 }
 
 .document-upload-section {
-    margin-top: 12px;
+    margin-top: 8px;
 }
 
-/* Repository Section - CORREGIDO: Espaciado igual que las demás pestañas */
+/* Repository Section - CORREGIDO: Espaciado mínimo */
 .repository-section {
     margin-top: 0;
 }
@@ -935,14 +1054,14 @@ header {
 .repository-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
 .resource-card {
     background: white;
     border-radius: 8px;
-    padding: 15px;
+    padding: 10px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
     text-align: center;
@@ -950,6 +1069,7 @@ header {
     flex-direction: column;
     height: 100%;
     width: 100%;
+    margin: 0;
 }
 
 .resource-card:hover {
@@ -958,22 +1078,22 @@ header {
 }
 
 .resource-icon {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     color: var(--sec-burgundy);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .resource-title {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    margin-bottom: 6px;
     color: #333;
 }
 
 .resource-description {
     flex-grow: 1;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     color: #666;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
 }
 
 /* Modal */
@@ -988,7 +1108,7 @@ header {
     z-index: 1000;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 8px;
 }
 
 .modal-content {
@@ -1011,65 +1131,87 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 15px 8px;
+    padding: 10px 10px 5px;
     border-bottom: 1px solid #eee;
 }
 
 .modal-header h3 {
     color: var(--sec-burgundy);
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .close-modal {
     background: none;
     border: none;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     cursor: pointer;
     color: var(--sec-dark-gray);
-    min-width: 30px;
-    min-height: 30px;
+    min-width: 28px;
+    min-height: 28px;
 }
 
 .modal-body {
-    padding: 15px;
+    padding: 10px;
 }
 
 .modal-footer {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
-    padding: 10px 15px;
+    gap: 5px;
+    padding: 6px 10px;
     border-top: 1px solid #eee;
     flex-wrap: wrap;
 }
 
+/* NUEVO: Estilo específico para formularios en modales centrados */
+.modal-form-group {
+    margin-bottom: 15px;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.modal-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--sec-dark-gray);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.modal-form-group input[type="file"] {
+    margin: 0 auto;
+    display: block;
+}
+
 .file-type-warning {
     color: var(--sec-orange);
-    font-size: 0.8rem;
-    margin-top: 4px;
+    font-size: 0.75rem;
+    margin-top: 8px;
+    text-align: center;
 }
 
 .file-info {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .file-info p {
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     display: flex;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     flex-wrap: wrap;
 }
 
 .file-info p strong {
-    min-width: 80px;
+    min-width: 70px;
 }
 
 /* Footer */
 footer {
     background-color: var(--sec-dark-burgundy);
     color: white;
-    padding: 20px 0 0;
+    padding: 12px 0 0;
     margin-top: auto;
     width: 100%;
     flex-shrink: 0;
@@ -1081,43 +1223,43 @@ footer {
     padding: 0 15px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-bottom: 12px;
+    gap: 12px;
+    margin-bottom: 8px;
     text-align: center;
 }
 
 .footer-section h4 {
-    margin-bottom: 10px;
-    font-size: 1rem;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
     color: white;
 }
 
 .footer-section p {
-    margin-bottom: 6px;
+    margin-bottom: 3px;
     color: rgba(255, 255, 255, 0.9);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 .footer-bottom {
     text-align: center;
-    padding: 12px;
+    padding: 8px;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.8);
     width: 100%;
     background-color: var(--sec-dark-burgundy);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
-/* Banner - CORREGIDO: Espaciado mínimo absoluto */
+/* Banner - CORREGIDO: Espaciado específico para desktop y móvil */
 .banner-container {
     width: 100%;
     max-width: 700px;
-    margin: 0 auto;
+    margin: 20px auto;
     display: flex;
     justify-content: center;
     flex: 1;
     align-items: center;
-    padding: 5px 0;
+    padding: 0;
 }
 
 .banner-image {
@@ -1131,8 +1273,8 @@ footer {
 .hamburger-container {
     position: absolute;
     top: auto;
-    bottom: 10px;
-    left: 12px;
+    bottom: 8px;
+    left: 10px;
     z-index: 1001;
 }
 
@@ -1140,8 +1282,8 @@ footer {
     display: none;
     flex-direction: column;
     justify-content: space-around;
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -1176,241 +1318,159 @@ footer {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 16px;
-    height: 16px;
-    margin: -8px 0 0 -8px;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
     border: 2px solid #f3f3f3;
     border-top: 2px solid var(--sec-burgundy);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
-/* ============================
-   ESTILOS MEJORADOS PARA DESTINATARIOS
-   ============================ */
-
-.destinatarios-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-}
-
-.destinatarios-header h4 {
-    color: var(--sec-burgundy);
-    margin: 0;
-    font-size: 1.1rem;
-}
-
-.destinatarios-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.destinatario-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 10px;
-    border-bottom: 1px solid #eee;
-    transition: background-color 0.2s;
-    gap: 12px;
-}
-
-.destinatario-item:hover {
-    background-color: #f9f9f9;
-}
-
-.destinatario-checkbox {
-    display: flex;
-    align-items: center;
-    position: relative;
-    cursor: pointer;
-}
-
-.destinatario-checkbox input[type="checkbox"] {
-    opacity: 0;
-    position: absolute;
-    width: 0;
-    height: 0;
-}
-
-.checkmark {
-    width: 20px;
-    height: 20px;
-    background-color: #fff;
-    border: 2px solid #ddd;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.destinatario-checkbox input[type="checkbox"]:checked + .checkmark {
-    background-color: var(--sec-burgundy);
+/* Efectos de hover mejorados */
+.destinatario-checkbox:hover .checkmark {
     border-color: var(--sec-burgundy);
 }
 
-.destinatario-checkbox input[type="checkbox"]:checked + .checkmark::after {
-    content: "✓";
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.destinatario-info {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.destinatario-email {
-    font-weight: 500;
-    color: #333;
-    font-size: 0.9rem;
-}
-
-.destinatario-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.status-badge {
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
-.status-active {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.status-inactive {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.destinatario-actions {
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
-.destinatarios-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-}
-
-.selection-info {
-    font-size: 0.85rem;
-    color: #666;
-    font-weight: 500;
-}
-
-/* Estados de los checkboxes */
-.destinatario-checkbox input[type="checkbox"]:focus + .checkmark {
-    box-shadow: 0 0 0 2px rgba(151, 32, 68, 0.2);
+.destinatario-actions .btn-icon:hover {
+    transform: scale(1.1);
 }
 
 /* ============================
-   CORRECCIONES ESPECÍFICAS PARA MÓVIL
+   CORRECCIÓN ESPECÍFICA PARA HERO SECTIONS - MÍNIMO ESPACIO
    ============================ */
 
-/* CORRECCIÓN 1: Ajustar posición del hero en TODAS las pestañas */
+/* Asegurar que TODOS los hero sections tengan el ESPACIADO MÍNIMO */
 #asistencia .hero,
-#trimestral .hero,
-#ctz .hero,
-#eventos .hero,
-#repositorio .hero {
-    margin-top: 0;
-    margin-bottom: 10px;
-    padding-top: 12px;
-    padding-bottom: 12px;
+#trimestral .hero.trimestral-hero,
+#ctz .hero.ctz-hero,
+#eventos .hero.eventos-hero,
+#repositorio .hero.repositorio-hero {
+    margin: 0 0 6px 0 !important; /* ELIMINADO margen superior */
+    padding: 6px 10px !important;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
 }
 
-/* CORRECCIÓN 2: Asegurar que todas las secciones tengan el mismo espaciado */
+/* CORRECCIÓN ESPECÍFICA: Eliminar margen superior solo de Eventos y Repositorio */
+#eventos .hero.eventos-hero,
+#repositorio .hero.repositorio-hero {
+    margin-top: 0 !important;
+    margin-bottom: 4px !important;
+}
+
+/* Asegurar que el contenido de Eventos y Repositorio empiece inmediatamente después de la navegación */
+#eventos,
+#repositorio {
+    padding-top: 0 !important;
+}
+
+/* ESPECIAL: Para usuarios normales - aún más compacto */
+body:not(.admin-user) .hero {
+    margin: 0 0 4px 0 !important; /* ELIMINADO margen superior */
+    padding: 5px 8px !important;
+}
+
+/* Asegurar que el contenido de todas las pestañas empiece inmediatamente después del hero */
 #asistencia .dashboard,
 #trimestral .dashboard,
 #ctz .dashboard,
 #eventos .events-grid,
 #repositorio .repository-grid {
-    margin-top: 0;
-    margin-bottom: 15px;
+    margin-top: 0 !important;
+    margin-bottom: 8px;
 }
 
-/* CORRECCIÓN 3: Eliminar TODO el espacio en blanco en móviles */
+/* Corrección específica para el grid de eventos y repositorio */
+#eventos .events-grid,
+#repositorio .repository-grid {
+    margin-top: 0 !important;
+    margin-bottom: 10px;
+}
+
+/* Ajustes responsivos para móviles */
 @media (max-width: 768px) {
     /* Header más compacto */
     header {
-        padding: 8px 0;
+        padding: 4px 0;
     }
     
     .logo img {
-        height: 50px;
-        margin-right: 8px;
+        height: 40px;
+        margin-right: 5px;
     }
     
     .logo-text h1 {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
     }
     
     .logo-text p {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
     }
     
     .btn {
-        padding: 6px 12px;
-        font-size: 0.8rem;
+        padding: 4px 8px;
+        font-size: 0.7rem;
     }
     
     /* Main content sin márgenes */
     .main-content {
-        padding: 2px 0;
-        min-height: calc(100vh - 130px);
+        padding: 0;
+        min-height: calc(100vh - 110px);
     }
     
-    /* Login y Banner SIN espacios */
+    /* Login y Banner SIN espacios en móvil */
     .login-container {
-        min-height: 40vh;
+        min-height: 30vh;
         margin: 0;
-        padding: 2px 0;
+        padding: 0;
     }
     
     .banner-container {
         margin: 0 auto;
-        padding: 2px 0;
-        min-height: 40vh;
+        padding: 0;
+        min-height: 30vh;
     }
     
     .login-box {
-        padding: 15px;
+        padding: 10px;
         margin: 0 auto;
     }
     
-    /* Hero sections más compactos */
+    /* Hero sections ultra compactos en móvil */
     .hero {
-        padding: 10px;
-        margin-bottom: 8px;
+        padding: 4px 6px;
+        margin: 0 0 3px 0; /* ELIMINADO margen superior */
     }
     
     .hero h2 {
-        font-size: 1.3rem;
-        margin-bottom: 6px;
+        font-size: 1.1rem;
+        margin-bottom: 2px;
     }
     
     .hero p {
-        font-size: 0.85rem;
-        margin-bottom: 8px;
+        font-size: 0.75rem;
+        margin-bottom: 3px;
+    }
+    
+    /* ESPECIAL MÓVIL: Hero sections aún más compactos */
+    #asistencia .hero,
+    #trimestral .hero.trimestral-hero,
+    #ctz .hero.ctz-hero,
+    #eventos .hero.eventos-hero,
+    #repositorio .hero.repositorio-hero {
+        margin: 0 0 4px 0 !important; /* ELIMINADO margen superior */
+        padding: 4px 6px !important;
+    }
+    
+    /* CORRECCIÓN MÓVIL: Eventos y Repositorio sin margen superior */
+    #eventos .hero.eventos-hero,
+    #repositorio .hero.repositorio-hero {
+        margin-top: 0 !important;
+        margin-bottom: 2px !important;
+        padding: 3px 4px !important;
     }
     
     /* Navigation tabs responsivos */
@@ -1420,40 +1480,40 @@ footer {
     }
     
     .nav-tabs a {
-        padding: 10px 12px;
-        font-size: 0.8rem;
+        padding: 6px 8px;
+        font-size: 0.7rem;
     }
     
     /* Dashboard responsivo */
     .dashboard {
         grid-template-columns: 1fr;
-        gap: 10px;
-        margin-bottom: 10px;
+        gap: 6px;
+        margin-bottom: 6px;
     }
     
     .school-view-container {
-        margin: 0 5px 8px 5px;
+        margin: 0 2px 4px 2px;
     }
     
     .card-body {
-        padding: 12px;
+        padding: 8px;
     }
     
     .school-info {
         flex-direction: column;
         text-align: center;
-        gap: 8px;
+        gap: 4px;
     }
     
     .school-icon {
         margin-right: 0;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
     }
     
     .upload-status {
         flex-direction: column;
         align-items: stretch;
-        gap: 8px;
+        gap: 4px;
     }
     
     .status-icons {
@@ -1467,15 +1527,15 @@ footer {
     
     /* Botones más grandes para touch */
     .btn, .view-file-btn, .btn-icon {
-        min-height: 44px;
-        min-width: 44px;
+        min-height: 36px;
+        min-width: 36px;
     }
     
     /* Destinatarios responsive */
     .destinatarios-header {
         flex-direction: column;
         align-items: stretch;
-        gap: 10px;
+        gap: 6px;
     }
     
     .destinatarios-actions {
@@ -1484,22 +1544,22 @@ footer {
     
     .destinatario-item {
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 4px;
     }
     
     .destinatario-info {
-        flex-basis: calc(100% - 100px);
+        flex-basis: calc(100% - 80px);
     }
     
     .destinatarios-footer {
         flex-direction: column;
-        gap: 10px;
+        gap: 6px;
         text-align: center;
     }
     
     /* Tablas responsivas */
     .history-table-container {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
     }
     
     .history-table {
@@ -1508,8 +1568,8 @@ footer {
     
     .history-table th,
     .history-table td {
-        padding: 6px 8px;
-        font-size: 0.75rem;
+        padding: 3px 4px;
+        font-size: 0.65rem;
     }
     
     .desktop-only {
@@ -1524,20 +1584,20 @@ footer {
     #eventos .events-grid,
     #repositorio .repository-grid {
         grid-template-columns: 1fr;
-        gap: 10px;
-        margin-bottom: 10px;
+        gap: 6px;
+        margin-bottom: 6px;
     }
     
     .event-card,
     .resource-card {
-        margin: 0 5px;
+        margin: 0 2px;
     }
     
     /* CTZ items en columna */
     .ctz-item {
         flex-direction: column;
         text-align: center;
-        gap: 10px;
+        gap: 6px;
     }
     
     .ctz-info h4,
@@ -1547,69 +1607,89 @@ footer {
     
     /* Footer más compacto */
     footer {
-        padding: 15px 0 0;
+        padding: 8px 0 0;
     }
     
     .footer-content {
-        gap: 15px;
-        margin-bottom: 10px;
+        gap: 8px;
+        margin-bottom: 6px;
     }
     
     .footer-bottom {
-        padding: 10px;
+        padding: 6px;
+    }
+    
+    /* BANNER EN MÓVIL - SIN MARGEN */
+    .banner-container {
+        margin: 0 auto !important;
+        padding: 0 !important;
+    }
+    
+    .banner-image {
+        margin: 0 !important;
+    }
+    
+    /* LOGIN BOX EN MÓVIL - SIN MARGEN SUPERIOR */
+    .login-container {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    .login-box {
+        margin-top: 0 !important;
     }
 }
 
 /* Ajustes adicionales para móviles muy pequeños (Motorola G51) */
 @media (max-width: 480px) {
     .container {
-        padding: 0 10px;
+        padding: 0 6px;
     }
     
     .login-container {
-        min-height: 35vh;
+        min-height: 25vh;
     }
     
     .banner-container {
-        min-height: 35vh;
+        min-height: 25vh;
     }
     
     .login-box {
-        padding: 12px;
+        padding: 8px;
     }
     
     .hero {
-        padding: 8px;
-        margin-bottom: 6px;
+        padding: 3px 4px;
+        margin: 0 0 2px 0;
     }
     
     .hero h2 {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
     
     .card-body {
-        padding: 10px;
+        padding: 6px;
     }
     
     .btn {
-        padding: 8px 12px;
-        font-size: 0.85rem;
+        padding: 4px 6px;
+        font-size: 0.65rem;
     }
     
     /* Ajustes específicos para status en móviles pequeños */
     .status-icons {
         flex-direction: column;
         width: 100%;
-        gap: 5px;
+        gap: 3px;
     }
     
     .status-icons .btn {
         width: 100%;
-        margin: 2px 0;
+        margin: 1px 0;
     }
     
     .upload-status {
-        gap: 6px;
+        gap: 3px;
     }
     
     /* Destinatarios en móviles pequeños */
@@ -1634,33 +1714,34 @@ footer {
 
 @media (max-width: 360px) {
     .login-container {
-        min-height: 30vh;
+        min-height: 20vh;
     }
     
     .banner-container {
-        min-height: 30vh;
+        min-height: 20vh;
     }
     
     .login-box {
-        padding: 10px;
-    }
-    
-    .hero {
         padding: 6px;
     }
     
+    .hero {
+        padding: 2px 3px;
+        margin: 0 0 2px 0;
+    }
+    
     .hero h2 {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
     }
     
     .btn {
-        padding: 6px 10px;
-        font-size: 0.8rem;
+        padding: 3px 5px;
+        font-size: 0.6rem;
     }
     
     .nav-tabs a {
-        padding: 8px 10px;
-        font-size: 0.75rem;
+        padding: 4px 6px;
+        font-size: 0.65rem;
     }
 }
 
@@ -1672,7 +1753,7 @@ footer {
 @media (max-width: 992px) and (min-width: 769px) {
     .dashboard {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 12px;
+        gap: 8px;
     }
     
     .events-grid {
@@ -1694,15 +1775,15 @@ footer {
 /* Orientación landscape en móviles */
 @media (max-height: 500px) and (max-width: 768px) {
     .login-container {
-        min-height: 60vh;
+        min-height: 40vh;
     }
     
     .banner-container {
-        min-height: 60vh;
+        min-height: 40vh;
     }
     
     .main-content {
-        min-height: calc(100vh - 120px);
+        min-height: calc(100vh - 100px);
     }
 }
 
@@ -1748,19 +1829,19 @@ footer {
     
     .history-table tr {
         display: block;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
         border: 1px solid #ddd;
         border-radius: 6px;
-        padding: 8px;
+        padding: 4px;
         background: white;
     }
     
     .history-table td {
         display: block;
         text-align: right;
-        padding: 6px 8px;
+        padding: 3px 4px;
         border-bottom: 1px solid #eee;
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
     
     .history-table td:last-child {
@@ -1778,8 +1859,8 @@ footer {
         text-align: center;
         display: flex;
         justify-content: center;
-        gap: 8px;
-        padding-top: 8px;
+        gap: 4px;
+        padding-top: 4px;
     }
     
     .history-table td[data-label="Acciones"]::before {
@@ -1789,10 +1870,10 @@ footer {
 
 /* Estilo adicional para información de estado */
 .status-info {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: #666;
     font-style: italic;
-    margin-left: 8px;
+    margin-left: 4px;
 }
 
 /* Mejora específica para la sección CTZ de usuarios normales */
@@ -1836,20 +1917,30 @@ body {
 
 /* CORRECCIÓN FINAL: Clase para marcar cuando hay sesión activa */
 body.logged-in .main-content {
-    padding-top: 2px;
+    padding-top: 0;
 }
 
 /* CORRECCIÓN ESPECIAL: Ajuste específico para desktop en eventos y repositorio */
 @media (min-width: 769px) {
-    #eventos .hero,
-    #repositorio .hero {
-        margin-bottom: 15px;
+    #eventos .hero.eventos-hero,
+    #repositorio .hero.repositorio-hero {
+        margin-bottom: 6px;
     }
     
     #eventos .events-grid,
     #repositorio .repository-grid {
         margin-top: 0;
-        gap: 20px;
+        gap: 12px;
+    }
+    
+    /* BANNER EN DESKTOP - CON MARGEN */
+    .banner-container {
+        margin: 20px auto;
+    }
+    
+    /* LOGIN BOX EN DESKTOP - CON MARGEN INFERIOR */
+    .login-container {
+        margin-bottom: 20px;
     }
 }
 
@@ -1890,11 +1981,250 @@ body {
     }
 }
 
-/* Efectos de hover mejorados */
-.destinatario-checkbox:hover .checkmark {
-    border-color: var(--sec-burgundy);
+/* Clase para identificar usuarios admin */
+/* Estilos específicos para admin pueden agregarse aquí si son necesarios */
+
+/* Clase para identificar usuarios normales */
+/* Estilos específicos para usuarios normales pueden agregarse aquí si es necesario */
+
+/* Asegurar que no haya espacios en blanco no deseados */
+.tab-content {
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
-.destinatario-actions .btn-icon:hover {
-    transform: scale(1.1);
+.tab-content > *:first-child {
+    margin-top: 0 !important;
+}
+
+/* Eliminar cualquier padding/margin extra */
+* {
+    box-sizing: border-box;
+}
+
+/* Garantizar que los elementos estén pegados al header */
+.nav-container + .main-content .tab-content .hero:first-child {
+    margin-top: 0 !important;
+}
+
+/* CORRECCIÓN ESPECIAL: Eliminar espacios en blanco en pestañas Eventos y Repositorio */
+#eventos,
+#repositorio {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+#eventos .hero,
+#repositorio .hero {
+    margin-top: 0 !important;
+}
+
+/* CORRECCIÓN ESPECIAL: Centrado de elementos en modales */
+.modal-form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-form-group label,
+.modal-form-group input,
+.modal-form-group .file-type-warning {
+    text-align: center;
+    width: 100%;
+}
+
+/* SOLUCIÓN DIRECTA: Eliminar todo el espacio superior de Eventos y Repositorio */
+#eventos .hero,
+#repositorio .hero {
+    margin-top: 0 !important;
+    padding-top: 2px !important;
+}
+
+/* Asegurar que el contenido esté pegado a la navegación */
+.nav-container + .main-content #eventos .hero:first-child,
+.nav-container + .main-content #repositorio .hero:first-child {
+    margin-top: 0 !important;
+}
+
+/* En móvil, aún más compacto */
+@media (max-width: 768px) {
+    #eventos .hero,
+    #repositorio .hero {
+        margin-top: 0 !important;
+        padding-top: 1px !important;
+        margin-bottom: 2px !important;
+    }
+}
+
+/* ============================
+   CORRECCIÓN ESPECÍFICA PARA EVENTOS Y REPOSITORIO
+   ============================ */
+
+/* VERSIÓN DESKTOP - Eliminar espacio superior en Eventos y Repositorio */
+@media (min-width: 769px) {
+    #eventos,
+    #repositorio {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    #eventos .hero.eventos-hero,
+    #repositorio .hero.repositorio-hero {
+        margin-top: 0 !important;
+        margin-bottom: 6px !important;
+        padding: 8px 12px !important;
+    }
+    
+    /* Asegurar que el contenido esté pegado al hero */
+    #eventos .events-grid,
+    #repositorio .repository-grid {
+        margin-top: 0 !important;
+        margin-bottom: 10px !important;
+    }
+}
+
+/* VERSIÓN MÓVIL - Control individual */
+@media (max-width: 768px) {
+    /* EVENTOS - Ya está bien, solo asegurar */
+    #eventos {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    #eventos .hero.eventos-hero {
+        margin-top: 0 !important;
+        margin-bottom: 4px !important;
+        padding: 4px 6px !important;
+    }
+    
+    #eventos .events-grid {
+        margin-top: 0 !important;
+        margin-bottom: 6px !important;
+    }
+    
+    /* REPOSITORIO - Corrección específica */
+    #repositorio {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    #repositorio .hero.repositorio-hero {
+        margin-top: 0 !important;
+        margin-bottom: 4px !important;
+        padding: 4px 6px !important;
+    }
+    
+    #repositorio .repository-grid {
+        margin-top: 0 !important;
+        margin-bottom: 6px !important;
+    }
+}
+
+/* CORRECCIÓN DE EMERGENCIA - Forzar posición */
+.nav-container + .main-content #eventos,
+.nav-container + .main-content #repositorio {
+    position: relative;
+    top: -1px; /* Empujar hacia arriba */
+}
+
+/* Eliminar cualquier espacio residual */
+body #eventos,
+body #repositorio {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Asegurar que los heroes estén pegados */
+#eventos > .hero:first-child,
+#repositorio > .hero:first-child {
+    margin-top: 0 !important;
+    padding-top: 2px !important;
+}
+
+/* Contenedores específicos sin márgenes */
+#eventos .events-section,
+#repositorio .repository-section {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* CLASES DE CONTROL MANUAL - Agregar donde necesites */
+.espacio-cero {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.pegado-superior {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.hero-compacto {
+    margin: 0 0 4px 0 !important;
+    padding: 4px 6px !important;
+}
+
+.hero-compacto-desktop {
+    margin: 0 0 6px 0 !important;
+    padding: 6px 10px !important;
+}
+
+/* ============================
+   CORRECCIONES ESPECÍFICAS PARA LOS PROBLEMAS MENCIONADOS
+   ============================ */
+
+/* CORRECCIÓN GLOBAL: Eliminar espacio superior en TODOS los heroes */
+.tab-content .hero:first-child {
+    margin-top: 0 !important;
+}
+
+/* CORRECCIÓN ESPECÍFICA para Desktop Admin - Eventos y Repositorio */
+@media (min-width: 769px) {
+    .admin-user #eventos .hero.eventos-hero,
+    .admin-user #repositorio .hero.repositorio-hero {
+        margin-top: 0 !important;
+    }
+}
+
+/* CORRECCIÓN ESPECÍFICA para Desktop Usuarios Normales - TODAS las pestañas */
+@media (min-width: 769px) {
+    .normal-user .tab-content .hero:first-child {
+        margin-top: 0 !important;
+    }
+}
+
+/* CORRECCIÓN ESPECÍFICA para Móvil Usuarios Normales - Asistencia y Trimestral */
+@media (max-width: 768px) {
+    .normal-user #asistencia .hero,
+    .normal-user #trimestral .hero {
+        margin-top: 0 !important;
+    }
+}
+
+/* CORRECCIÓN DEFINITIVA: Eliminar cualquier espacio entre nav-tabs y hero */
+.nav-container + .main-content .tab-content.active .hero:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Asegurar que no haya espacios residuales */
+body.logged-in .main-content .tab-content.active {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Eliminar espacios específicos para usuarios normales en móvil */
+@media (max-width: 768px) {
+    .normal-user #asistencia,
+    .normal-user #trimestral {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    .normal-user #asistencia .hero,
+    .normal-user #trimestral .hero {
+        margin-top: 0 !important;
+        margin-bottom: 4px !important;
+        padding: 4px 6px !important;
+    }
 }

@@ -34,14 +34,14 @@ $usuarios = array(
         'password' => 'admin',
         'nombre' => 'E.S.T. #60',
         'rol' => 'school',
-        'escuela_id' => '26DST0060K'
+        'escuela_id' => '26DST0060E'
     ),
     array(
         'email' => 'st72@zonax.com',
         'password' => 'admin',
         'nombre' => 'E.S.T. #72',
         'rol' => 'school',
-        'escuela_id' => '26DST0072K'
+        'escuela_id' => '26DST0072J'
     )
 );
 

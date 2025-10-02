@@ -28,6 +28,12 @@ class SistemaAsistencia {
         // Aplicar ajustes responsivos inmediatamente
         this.applyResponsiveAdjustments();
         
+        // Configurar gestión de destinatarios
+        this.configurarDestinatarios();
+        
+        // Auto-refresh si hay parámetro refresh
+        this.autoRefreshIfNeeded();
+        
         // Actualizar información del turno cada minuto
         setInterval(() => this.updateTurnInfo(), 60000);
         
@@ -46,14 +52,216 @@ class SistemaAsistencia {
         // Configurar eventos para formularios CTZ
         this.setupCTZForms();
         
-        // Configurar gestión de destinatarios
-        this.configurarDestinatarios();
-        
         // Marcar body cuando hay sesión
         this.markBodyForSession();
         
         // Escuchar cambios de tamaño
         this.setupResizeListener();
+        
+        // Configurar formularios de destinatarios
+        this.setupDestinatariosForm();
+        
+        // Aplicar correcciones de espaciado inmediatamente
+        this.applySpacingCorrections();
+        
+        // Aplicar correcciones específicas para móvil
+        this.applyMobileCorrections();
+        
+        // Aplicar corrección específica para Eventos y Repositorio
+        this.applyEventosRepositorioFix();
+        
+        // CORRECCIÓN ESPECÍFICA: Eliminar espacios en blanco definitivamente
+        this.applyDefinitiveSpacingFix();
+    }
+
+    // NUEVA FUNCIÓN: Corrección definitiva de espaciado
+    applyDefinitiveSpacingFix() {
+        // Eliminar cualquier espacio superior en todos los heroes
+        const allHeroes = document.querySelectorAll('.tab-content .hero');
+        allHeroes.forEach(hero => {
+            hero.style.marginTop = '0';
+            hero.style.paddingTop = '0';
+        });
+
+        // Eliminar espacios en contenedores principales
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(tab => {
+            tab.style.paddingTop = '0';
+            tab.style.marginTop = '0';
+        });
+
+        // Corrección específica para usuarios normales en móvil
+        if (this.isMobile && !window.appConfig.isAdmin) {
+            const asistenciaHero = document.querySelector('#asistencia .hero');
+            const trimestralHero = document.querySelector('#trimestral .hero');
+            
+            if (asistenciaHero) {
+                asistenciaHero.style.marginTop = '0';
+                asistenciaHero.style.marginBottom = '4px';
+            }
+            
+            if (trimestralHero) {
+                trimestralHero.style.marginTop = '0';
+                trimestralHero.style.marginBottom = '4px';
+            }
+        }
+
+        // Forzar repintado
+        setTimeout(() => {
+            document.body.style.display = 'none';
+            document.body.offsetHeight; // Trigger reflow
+            document.body.style.display = '';
+        }, 50);
+    }
+
+    // NUEVA FUNCIÓN: Auto-refresh automático
+    autoRefreshIfNeeded() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('refresh')) {
+            // Remover parámetro refresh y recargar
+            const newUrl = window.location.href.split('&refresh')[0].split('?refresh')[0];
+            setTimeout(() => {
+                window.location.href = newUrl;
+            }, 100);
+        }
+    }
+
+    // NUEVA FUNCIÓN: Correcciones específicas para móvil
+    applyMobileCorrections() {
+        if (this.isMobile) {
+            // Eliminar márgenes del banner en móvil
+            const bannerContainer = document.querySelector('.banner-container');
+            if (bannerContainer) {
+                bannerContainer.style.margin = '0';
+                bannerContainer.style.padding = '0';
+            }
+            
+            // Eliminar márgenes del login en móvil
+            const loginContainer = document.querySelector('.login-container');
+            if (loginContainer) {
+                loginContainer.style.margin = '0';
+                loginContainer.style.padding = '0';
+            }
+            
+            // Asegurar que eventos y repositorio no tengan espacios en blanco
+            this.fixEventosRepositorioSpacing();
+            
+            // Corrección específica para usuarios normales en móvil
+            if (!window.appConfig.isAdmin) {
+                this.fixNormalUserMobileSpacing();
+            }
+        } else {
+            // Aplicar márgenes en desktop
+            const bannerContainer = document.querySelector('.banner-container');
+            if (bannerContainer) {
+                bannerContainer.style.margin = '20px auto';
+            }
+            
+            const loginContainer = document.querySelector('.login-container');
+            if (loginContainer) {
+                loginContainer.style.marginBottom = '20px';
+            }
+        }
+    }
+
+    // NUEVA FUNCIÓN: Corrección específica para usuarios normales en móvil
+    fixNormalUserMobileSpacing() {
+        const asistenciaTab = document.getElementById('asistencia');
+        const trimestralTab = document.getElementById('trimestral');
+        
+        if (asistenciaTab) {
+            asistenciaTab.style.paddingTop = '0';
+            asistenciaTab.style.marginTop = '0';
+            
+            const asistenciaHero = asistenciaTab.querySelector('.hero');
+            if (asistenciaHero) {
+                asistenciaHero.style.marginTop = '0';
+                asistenciaHero.style.marginBottom = '4px';
+            }
+        }
+        
+        if (trimestralTab) {
+            trimestralTab.style.paddingTop = '0';
+            trimestralTab.style.marginTop = '0';
+            
+            const trimestralHero = trimestralTab.querySelector('.hero');
+            if (trimestralHero) {
+                trimestralHero.style.marginTop = '0';
+                trimestralHero.style.marginBottom = '4px';
+            }
+        }
+    }
+
+    // NUEVA FUNCIÓN: Corregir espaciado en pestañas Eventos y Repositorio
+    fixEventosRepositorioSpacing() {
+        const eventosTab = document.getElementById('eventos');
+        const repositorioTab = document.getElementById('repositorio');
+        
+        if (eventosTab) {
+            eventosTab.style.paddingTop = '0';
+            eventosTab.style.marginTop = '0';
+            
+            const eventosHero = eventosTab.querySelector('.hero');
+            if (eventosHero) {
+                eventosHero.style.marginTop = '0';
+                eventosHero.style.marginBottom = '4px';
+            }
+        }
+        
+        if (repositorioTab) {
+            repositorioTab.style.paddingTop = '0';
+            repositorioTab.style.marginTop = '0';
+            
+            const repositorioHero = repositorioTab.querySelector('.hero');
+            if (repositorioHero) {
+                repositorioHero.style.marginTop = '0';
+                repositorioHero.style.marginBottom = '4px';
+            }
+        }
+    }
+
+    // NUEVA FUNCIÓN: Corrección específica para espaciado de Eventos y Repositorio
+    applyEventosRepositorioFix() {
+        const eventosTab = document.getElementById('eventos');
+        const repositorioTab = document.getElementById('repositorio');
+        
+        if (eventosTab) {
+            eventosTab.style.paddingTop = '0';
+            eventosTab.style.marginTop = '0';
+            eventosTab.style.position = 'relative';
+            eventosTab.style.top = '0';
+            
+            const eventosHero = eventosTab.querySelector('.hero');
+            if (eventosHero) {
+                eventosHero.style.marginTop = '0';
+                eventosHero.style.marginBottom = this.isMobile ? '4px' : '6px';
+                eventosHero.style.padding = this.isMobile ? '4px 6px' : '8px 12px';
+            }
+            
+            const eventsGrid = eventosTab.querySelector('.events-grid');
+            if (eventsGrid) {
+                eventsGrid.style.marginTop = '0';
+            }
+        }
+        
+        if (repositorioTab) {
+            repositorioTab.style.paddingTop = '0';
+            repositorioTab.style.marginTop = '0';
+            repositorioTab.style.position = 'relative';
+            repositorioTab.style.top = '0';
+            
+            const repositorioHero = repositorioTab.querySelector('.hero');
+            if (repositorioHero) {
+                repositorioHero.style.marginTop = '0';
+                repositorioHero.style.marginBottom = this.isMobile ? '4px' : '6px';
+                repositorioHero.style.padding = this.isMobile ? '4px 6px' : '8px 12px';
+            }
+            
+            const repositoryGrid = repositorioTab.querySelector('.repository-grid');
+            if (repositoryGrid) {
+                repositoryGrid.style.marginTop = '0';
+            }
+        }
     }
 
     setupResizeListener() {
@@ -64,6 +272,11 @@ class SistemaAsistencia {
                 this.isMobile = this.detectMobile();
                 this.applyResponsiveAdjustments();
                 this.optimizeTablesForMobile();
+                this.applySpacingCorrections();
+                this.applyMobileCorrections();
+                this.fixEventosRepositorioSpacing();
+                this.applyEventosRepositorioFix();
+                this.applyDefinitiveSpacingFix();
             }, 250);
         });
     }
@@ -80,18 +293,30 @@ class SistemaAsistencia {
         // Ajustar elementos específicos para móvil
         const cards = document.querySelectorAll('.card, .event-card, .resource-card');
         cards.forEach(card => {
-            card.style.margin = '2px 0';
+            card.style.margin = '0 0 4px 0';
         });
 
         // Ajustar botones para touch
         const buttons = document.querySelectorAll('.btn, .btn-icon, .view-file-btn');
         buttons.forEach(button => {
-            button.style.minHeight = '44px';
-            button.style.minWidth = '44px';
+            button.style.minHeight = '36px';
+            button.style.minWidth = '36px';
         });
 
         // Optimizar espacios en login
         this.optimizeLoginForMobile();
+        
+        // Aplicar espaciado mínimo en móvil
+        this.applyMobileSpacing();
+        
+        // Aplicar correcciones móvil
+        this.applyMobileCorrections();
+        
+        // Aplicar corrección específica para Eventos y Repositorio
+        this.applyEventosRepositorioFix();
+        
+        // Aplicar corrección definitiva
+        this.applyDefinitiveSpacingFix();
     }
 
     applyDesktopOptimizations() {
@@ -100,22 +325,89 @@ class SistemaAsistencia {
         cards.forEach(card => {
             card.style.margin = '';
         });
+        
+        // Aplicar márgenes en desktop
+        this.applyDesktopMargins();
+        
+        // Aplicar corrección específica para Eventos y Repositorio
+        this.applyEventosRepositorioFix();
+        
+        // Aplicar corrección definitiva
+        this.applyDefinitiveSpacingFix();
+    }
+
+    // NUEVA FUNCIÓN: Aplicar márgenes en desktop
+    applyDesktopMargins() {
+        const bannerContainer = document.querySelector('.banner-container');
+        if (bannerContainer) {
+            bannerContainer.style.margin = '20px auto';
+        }
+        
+        const loginContainer = document.querySelector('.login-container');
+        if (loginContainer) {
+            loginContainer.style.marginBottom = '20px';
+        }
     }
 
     optimizeLoginForMobile() {
         const loginContainer = document.querySelector('.login-container');
         const bannerContainer = document.querySelector('.banner-container');
         
-        if (loginContainer) {
-            loginContainer.style.minHeight = '40vh';
+        if (loginContainer && this.isMobile) {
+            loginContainer.style.minHeight = '30vh';
             loginContainer.style.margin = '0';
-            loginContainer.style.padding = '2px 0';
+            loginContainer.style.padding = '0';
         }
         
-        if (bannerContainer) {
+        if (bannerContainer && this.isMobile) {
             bannerContainer.style.margin = '0 auto';
-            bannerContainer.style.padding = '2px 0';
-            bannerContainer.style.minHeight = '40vh';
+            bannerContainer.style.padding = '0';
+            bannerContainer.style.minHeight = '30vh';
+        }
+    }
+
+    optimizeCTZButtonsForMobile() {
+        const ctzUploadSections = document.querySelectorAll('.document-upload-section .upload-status');
+        
+        ctzUploadSections.forEach(section => {
+            if (this.isMobile) {
+                section.style.flexDirection = 'column';
+                section.style.alignItems = 'stretch';
+                section.style.gap = '4px';
+                
+                const statusIcons = section.querySelector('.status-icons');
+                if (statusIcons) {
+                    statusIcons.style.width = '100%';
+                    statusIcons.style.justifyContent = 'center';
+                    statusIcons.style.flexWrap = 'wrap';
+                    statusIcons.style.gap = '3px';
+                    
+                    const buttons = statusIcons.querySelectorAll('.btn');
+                    buttons.forEach(btn => {
+                        btn.style.flex = '1';
+                        btn.style.minWidth = '100px';
+                        btn.style.textAlign = 'center';
+                        btn.style.margin = '1px';
+                    });
+                }
+            }
+        });
+    }
+
+    adjustSpacingForNormalUsers() {
+        // Si no es admin, reducir espacios en blanco
+        if (!window.appConfig.isAdmin && window.appConfig.hasSession) {
+            const schoolViewContainers = document.querySelectorAll('.school-view-container');
+            const heroSections = document.querySelectorAll('.tab-content .hero');
+            
+            schoolViewContainers.forEach(container => {
+                container.style.marginBottom = '2px';
+            });
+            
+            heroSections.forEach(hero => {
+                hero.style.marginBottom = '4px';
+                hero.style.padding = '4px 6px';
+            });
         }
     }
 
@@ -233,6 +525,11 @@ class SistemaAsistencia {
         setTimeout(() => {
             this.applyResponsiveAdjustments();
             this.optimizeTablesForMobile();
+            this.applySpacingCorrections();
+            this.applyMobileCorrections();
+            this.fixEventosRepositorioSpacing();
+            this.applyEventosRepositorioFix();
+            this.applyDefinitiveSpacingFix();
         }, 100);
     }
 
@@ -351,6 +648,15 @@ class SistemaAsistencia {
         
         // Aplicar espaciado mínimo en móvil
         this.applyMobileSpacing();
+        
+        // Aplicar correcciones móvil
+        this.applyMobileCorrections();
+        
+        // Aplicar corrección específica para Eventos y Repositorio
+        this.applyEventosRepositorioFix();
+        
+        // Aplicar corrección definitiva
+        this.applyDefinitiveSpacingFix();
     }
 
     applyMobileSpacing() {
@@ -373,9 +679,9 @@ class SistemaAsistencia {
             const elements = document.querySelectorAll(selector);
             elements.forEach(element => {
                 element.style.marginTop = '0';
-                element.style.marginBottom = '5px';
+                element.style.marginBottom = '2px';
                 if (selector === '.main-content') {
-                    element.style.padding = '2px 0';
+                    element.style.padding = '0';
                 }
             });
         });
@@ -386,60 +692,15 @@ class SistemaAsistencia {
         const bannerContainer = document.querySelector('.banner-container');
         
         if (loginContainer && this.isMobile) {
-            loginContainer.style.minHeight = '40vh';
+            loginContainer.style.minHeight = '30vh';
             loginContainer.style.margin = '0';
-            loginContainer.style.padding = '2px 0';
+            loginContainer.style.padding = '0';
         }
         
         if (bannerContainer && this.isMobile) {
             bannerContainer.style.margin = '0 auto';
-            bannerContainer.style.padding = '2px 0';
-            bannerContainer.style.minHeight = '40vh';
-        }
-    }
-
-    optimizeCTZButtonsForMobile() {
-        const ctzUploadSections = document.querySelectorAll('.document-upload-section .upload-status');
-        
-        ctzUploadSections.forEach(section => {
-            if (this.isMobile) {
-                section.style.flexDirection = 'column';
-                section.style.alignItems = 'stretch';
-                section.style.gap = '8px';
-                
-                const statusIcons = section.querySelector('.status-icons');
-                if (statusIcons) {
-                    statusIcons.style.width = '100%';
-                    statusIcons.style.justifyContent = 'center';
-                    statusIcons.style.flexWrap = 'wrap';
-                    statusIcons.style.gap = '6px';
-                    
-                    const buttons = statusIcons.querySelectorAll('.btn');
-                    buttons.forEach(btn => {
-                        btn.style.flex = '1';
-                        btn.style.minWidth = '120px';
-                        btn.style.textAlign = 'center';
-                        btn.style.margin = '2px';
-                    });
-                }
-            }
-        });
-    }
-
-    adjustSpacingForNormalUsers() {
-        // Si no es admin, reducir espacios en blanco
-        if (!window.appConfig.isAdmin && window.appConfig.hasSession) {
-            const schoolViewContainers = document.querySelectorAll('.school-view-container');
-            const heroSections = document.querySelectorAll('.tab-content .hero');
-            
-            schoolViewContainers.forEach(container => {
-                container.style.marginBottom = '5px';
-            });
-            
-            heroSections.forEach(hero => {
-                hero.style.marginBottom = '8px';
-                hero.style.padding = '10px 12px';
-            });
+            bannerContainer.style.padding = '0';
+            bannerContainer.style.minHeight = '30vh';
         }
     }
 
@@ -447,7 +708,18 @@ class SistemaAsistencia {
         const tables = document.querySelectorAll('.history-table');
         tables.forEach(table => {
             if (this.isMobile) {
-                table.classList.add('mobile-optimized');
+                // Agregar atributos data-label para móviles
+                const headers = Array.from(table.querySelectorAll('th'));
+                const rows = table.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    cells.forEach((cell, index) => {
+                        if (headers[index]) {
+                            cell.setAttribute('data-label', headers[index].textContent);
+                        }
+                    });
+                });
             }
         });
     }
@@ -455,12 +727,70 @@ class SistemaAsistencia {
     enhanceTouchButtons() {
         const buttons = document.querySelectorAll('.btn, .btn-icon, .view-file-btn');
         buttons.forEach(button => {
-            button.style.minHeight = '44px';
-            button.style.minWidth = '44px';
+            button.style.minHeight = '36px';
+            button.style.minWidth = '36px';
             button.style.display = 'flex';
             button.style.alignItems = 'center';
             button.style.justifyContent = 'center';
         });
+    }
+
+    // NUEVA FUNCIÓN: Correcciones específicas de espaciado
+    applySpacingCorrections() {
+        // Eliminar espacios en blanco entre navegación y hero
+        const navContainer = document.querySelector('.nav-container');
+        const heroSections = document.querySelectorAll('.hero');
+        
+        if (navContainer) {
+            navContainer.style.marginBottom = '0';
+            navContainer.style.paddingBottom = '0';
+        }
+        
+        heroSections.forEach(hero => {
+            // ESPECIAL: Para Eventos y Repositorio, margen superior CERO
+            if (hero.classList.contains('eventos-hero') || hero.classList.contains('repositorio-hero')) {
+                hero.style.marginTop = '0';
+                hero.style.marginBottom = '4px';
+                hero.style.padding = '4px 8px';
+            } else {
+                // Para las demás pestañas, mantener el espaciado normal
+                hero.style.marginTop = '0';
+                hero.style.marginBottom = '6px';
+            }
+            
+            // Para usuarios normales, aún más compacto
+            if (!window.appConfig.isAdmin && window.appConfig.hasSession) {
+                hero.style.marginBottom = '3px';
+                hero.style.padding = '3px 6px';
+            }
+        });
+
+        // Ajustar espaciado en todas las secciones principales
+        const sections = document.querySelectorAll('.dashboard, .events-grid, .repository-grid, .school-view-container');
+        sections.forEach(section => {
+            section.style.marginTop = '0';
+            section.style.marginBottom = '8px';
+            
+            if (!window.appConfig.isAdmin && window.appConfig.hasSession) {
+                section.style.marginBottom = '6px';
+            }
+        });
+
+        // Corrección específica para trimestral en móvil para usuarios normales
+        if (this.isMobile && !window.appConfig.isAdmin && window.appConfig.hasSession) {
+            const trimestralHero = document.querySelector('#trimestral .hero');
+            if (trimestralHero) {
+                trimestralHero.style.marginBottom = '2px';
+                trimestralHero.style.padding = '2px 4px';
+            }
+        }
+        
+        // Aplicar corrección específica para eventos y repositorio
+        this.fixEventosRepositorioSpacing();
+        this.applyEventosRepositorioFix();
+        
+        // Aplicar corrección definitiva
+        this.applyDefinitiveSpacingFix();
     }
 
     // Funciones para gestión de destinatarios
@@ -474,20 +804,29 @@ class SistemaAsistencia {
         
         // Actualizar contador inicial
         this.actualizarContadorSeleccion();
-        
-        // Configurar el formulario para evitar envíos vacíos
-        const form = document.getElementById('destinatariosForm');
-        if (form) {
+    }
+
+    setupDestinatariosForm() {
+        const forms = document.querySelectorAll('form[id^="destinatariosForm"]');
+        forms.forEach(form => {
             form.addEventListener('submit', (e) => {
-                const checkboxes = document.querySelectorAll('input[name="destinatarios_seleccionados[]"]:checked');
+                const checkboxes = form.querySelectorAll('input[name="destinatarios_seleccionados[]"]:checked');
                 if (checkboxes.length === 0) {
                     e.preventDefault();
                     alert('Por favor seleccione al menos un destinatario.');
                     return false;
                 }
+                
+                // Mostrar loading state
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+                }
+                
                 return true;
             });
-        }
+        });
     }
 
     seleccionarTodos() {
@@ -507,11 +846,14 @@ class SistemaAsistencia {
     }
 
     actualizarContadorSeleccion() {
-        const checkboxes = document.querySelectorAll('input[name="destinatarios_seleccionados[]"]:checked');
-        const contador = document.getElementById('selectionInfo');
-        if (contador) {
-            contador.textContent = `${checkboxes.length} seleccionados`;
-        }
+        const forms = document.querySelectorAll('form[id^="destinatariosForm"]');
+        forms.forEach(form => {
+            const checkboxes = form.querySelectorAll('input[name="destinatarios_seleccionados[]"]:checked');
+            const contador = form.querySelector('.selection-info');
+            if (contador) {
+                contador.textContent = `${checkboxes.length} seleccionados`;
+            }
+        });
     }
 
     eliminarDestinatario(id) {
@@ -897,6 +1239,13 @@ class SistemaAsistencia {
     markBodyForSession() {
         if (window.appConfig.hasSession) {
             document.body.classList.add('logged-in');
+            
+            // Agregar clase específica para admin o usuario normal
+            if (window.appConfig.isAdmin) {
+                document.body.classList.add('admin-user');
+            } else {
+                document.body.classList.add('normal-user');
+            }
         }
     }
 }
@@ -911,6 +1260,16 @@ document.addEventListener('DOMContentLoaded', function() {
         window.sistemaAsistencia.optimizeCTZButtonsForMobile();
         window.sistemaAsistencia.optimizeLoginSpacing();
         window.sistemaAsistencia.applyMobileSpacing();
+        window.sistemaAsistencia.applySpacingCorrections();
+        window.sistemaAsistencia.applyMobileCorrections();
+        window.sistemaAsistencia.fixEventosRepositorioSpacing();
+        window.sistemaAsistencia.applyEventosRepositorioFix();
+        window.sistemaAsistencia.applyDefinitiveSpacingFix();
+        
+        // Mostrar mensajes de sesión si existen
+        if (typeof window.message !== 'undefined') {
+            alert(window.message);
+        }
     }, 100);
 });
 
@@ -1023,6 +1382,50 @@ function closeEditDestinatarioModal() {
     window.sistemaAsistencia.closeEditDestinatarioModal();
 }
 
+function seleccionarTodos() {
+    window.sistemaAsistencia.seleccionarTodos();
+}
+
+function deseleccionarTodos() {
+    window.sistemaAsistencia.deseleccionarTodos();
+}
+
+function eliminarDestinatario(id) {
+    window.sistemaAsistencia.eliminarDestinatario(id);
+}
+
+// Función global para forzar corrección de espaciado
+function forceEventosRepositorioFix() {
+    if (window.sistemaAsistencia) {
+        window.sistemaAsistencia.applyEventosRepositorioFix();
+    }
+}
+
+// Función global para corrección definitiva
+function applyDefinitiveSpacingFix() {
+    if (window.sistemaAsistencia) {
+        window.sistemaAsistencia.applyDefinitiveSpacingFix();
+    }
+}
+
+// Ejecutar inmediatamente y en cada cambio
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        forceEventosRepositorioFix();
+        applyDefinitiveSpacingFix();
+    }, 100);
+});
+
+// También ejecutar cuando cambien las pestañas
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('tab-link')) {
+        setTimeout(() => {
+            forceEventosRepositorioFix();
+            applyDefinitiveSpacingFix();
+        }, 300);
+    }
+});
+
 // Manejo de errores globales
 window.addEventListener('error', function(e) {
     console.error('Error global:', e.error);
@@ -1055,6 +1458,11 @@ window.addEventListener('resize', function() {
             window.sistemaAsistencia.applyResponsiveAdjustments();
             window.sistemaAsistencia.optimizeTablesForMobile();
             window.sistemaAsistencia.alignMobileElements();
+            window.sistemaAsistencia.applySpacingCorrections();
+            window.sistemaAsistencia.applyMobileCorrections();
+            window.sistemaAsistencia.fixEventosRepositorioSpacing();
+            window.sistemaAsistencia.applyEventosRepositorioFix();
+            window.sistemaAsistencia.applyDefinitiveSpacingFix();
         }
     }, 250);
 });
@@ -1067,6 +1475,11 @@ document.addEventListener('click', function(e) {
                 window.sistemaAsistencia.alignMobileElements();
                 window.sistemaAsistencia.optimizeCTZButtonsForMobile();
                 window.sistemaAsistencia.applyMobileSpacing();
+                window.sistemaAsistencia.applySpacingCorrections();
+                window.sistemaAsistencia.applyMobileCorrections();
+                window.sistemaAsistencia.fixEventosRepositorioSpacing();
+                window.sistemaAsistencia.applyEventosRepositorioFix();
+                window.sistemaAsistencia.applyDefinitiveSpacingFix();
             }
         }, 300);
     }

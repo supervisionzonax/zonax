@@ -222,6 +222,266 @@ function getArchivoCTZMaestro($conn) {
     return $archivo_ctz_maestro;
 }
 
+/**
+ * Consolidar archivos de asistencia diaria
+ */
+function consolidarArchivosAsistencia($turno) {
+    global $conn;
+    
+    try {
+        $hoy = date('Y-m-d');
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->removeSheetByIndex(0); // Eliminar hoja por defecto
+        
+        // Obtener archivos del turno específico de hoy
+        $sql = "SELECT a.*, u.nombre as escuela_nombre 
+                FROM archivos a 
+                LEFT JOIN usuarios u ON a.escuela_id = u.escuela_id 
+                WHERE DATE(a.fecha_subida) = '$hoy' AND a.turno = '$turno' 
+                ORDER BY a.escuela_id";
+        $result = $conn->query($sql);
+        
+        if ($result->num_rows === 0) {
+            return "No hay archivos para consolidar del turno $turno";
+        }
+        
+        $hoja_index = 0;
+        while($archivo = $result->fetch_assoc()) {
+            if (!file_exists($archivo['ruta_archivo'])) {
+                continue; // Saltar archivos que no existen físicamente
+            }
+            
+            // Cargar archivo de cada escuela
+            $archivo_spreadsheet = IOFactory::load($archivo['ruta_archivo']);
+            $worksheet = $archivo_spreadsheet->getActiveSheet();
+            
+            // Crear nueva hoja en el consolidado
+            $nueva_hoja = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $archivo['escuela_nombre']);
+            $spreadsheet->addSheet($nueva_hoja, $hoja_index);
+            
+            // Copiar contenido
+            foreach ($worksheet->getRowIterator() as $row) {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(false);
+                
+                $fila_destino = $row->getRowIndex();
+                foreach ($cellIterator as $cell) {
+                    $columna_destino = $cell->getColumn();
+                    $nueva_hoja->setCellValue($columna_destino . $fila_destino, $cell->getCalculatedValue());
+                }
+            }
+            
+            // Agregar encabezado con nombre de escuela
+            $nueva_hoja->insertNewRowBefore(1, 2);
+            $nueva_hoja->setCellValue('A1', 'ESCUELA: ' . $archivo['escuela_nombre']);
+            $nueva_hoja->setCellValue('A2', 'TURNO: ' . strtoupper($turno) . ' - FECHA: ' . date('d/m/Y'));
+            
+            $hoja_index++;
+        }
+        
+        if ($hoja_index === 0) {
+            return "No se pudieron cargar archivos válidos para consolidar";
+        }
+        
+        // Guardar archivo consolidado
+        $target_dir = "uploads/consolidados/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        
+        $nombre_archivo = "CONSOLIDADO_" . strtoupper($turno) . "_" . date('Y-m-d') . ".xlsx";
+        $ruta_archivo = $target_dir . $nombre_archivo;
+        
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($ruta_archivo);
+        
+        // Guardar en base de datos
+        $sql_consolidado = "INSERT INTO consolidados (turno, nombre_archivo, ruta_archivo, fecha_creacion) 
+                           VALUES ('$turno', '$nombre_archivo', '$ruta_archivo', NOW())";
+        
+        if ($conn->query($sql_consolidado)) {
+            return "success:" . $nombre_archivo;
+        } else {
+            return "Error al guardar en base de datos: " . $conn->error;
+        }
+        
+    } catch (Exception $e) {
+        return "Error al consolidar archivos: " . $e->getMessage();
+    }
+}
+
+/**
+ * Consolidar archivos trimestrales
+ */
+function consolidarArchivosTrimestrales() {
+    global $conn;
+    
+    try {
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->removeSheetByIndex(0); // Eliminar hoja por defecto
+        
+        // Obtener todos los archivos trimestrales
+        $sql = "SELECT a.*, u.nombre as escuela_nombre 
+                FROM archivos_trimestrales a 
+                LEFT JOIN usuarios u ON a.escuela_id = u.escuela_id 
+                ORDER BY a.escuela_id";
+        $result = $conn->query($sql);
+        
+        if ($result->num_rows === 0) {
+            return "No hay archivos trimestrales para consolidar";
+        }
+        
+        $hoja_index = 0;
+        while($archivo = $result->fetch_assoc()) {
+            if (!file_exists($archivo['ruta_archivo'])) {
+                continue;
+            }
+            
+            // Cargar archivo de cada escuela
+            $archivo_spreadsheet = IOFactory::load($archivo['ruta_archivo']);
+            $worksheet = $archivo_spreadsheet->getActiveSheet();
+            
+            // Crear nueva hoja en el consolidado
+            $nueva_hoja = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $archivo['escuela_nombre']);
+            $spreadsheet->addSheet($nueva_hoja, $hoja_index);
+            
+            // Copiar contenido
+            foreach ($worksheet->getRowIterator() as $row) {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(false);
+                
+                $fila_destino = $row->getRowIndex();
+                foreach ($cellIterator as $cell) {
+                    $columna_destino = $cell->getColumn();
+                    $nueva_hoja->setCellValue($columna_destino . $fila_destino, $cell->getCalculatedValue());
+                }
+            }
+            
+            // Agregar encabezado
+            $nueva_hoja->insertNewRowBefore(1, 2);
+            $nueva_hoja->setCellValue('A1', 'ESCUELA: ' . $archivo['escuela_nombre']);
+            $nueva_hoja->setCellValue('A2', 'REPORTE TRIMESTRAL - FECHA: ' . date('d/m/Y'));
+            
+            $hoja_index++;
+        }
+        
+        if ($hoja_index === 0) {
+            return "No se pudieron cargar archivos trimestrales válidos";
+        }
+        
+        // Guardar archivo consolidado
+        $target_dir = "uploads/consolidados_trimestrales/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        
+        $nombre_archivo = "CONSOLIDADO_TRIMESTRAL_" . date('Y-m-d') . ".xlsx";
+        $ruta_archivo = $target_dir . $nombre_archivo;
+        
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($ruta_archivo);
+        
+        // Guardar en base de datos
+        $sql_consolidado = "INSERT INTO consolidados_trimestrales (nombre_archivo, ruta_archivo, fecha_creacion) 
+                           VALUES ('$nombre_archivo', '$ruta_archivo', NOW())";
+        
+        if ($conn->query($sql_consolidado)) {
+            return "success:" . $nombre_archivo;
+        } else {
+            return "Error al guardar en base de datos: " . $conn->error;
+        }
+        
+    } catch (Exception $e) {
+        return "Error al consolidar archivos trimestrales: " . $e->getMessage();
+    }
+}
+
+/**
+ * Consolidar archivos CTZ
+ */
+function consolidarArchivosCTZ() {
+    global $conn;
+    
+    try {
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->removeSheetByIndex(0); // Eliminar hoja por defecto
+        
+        // Obtener todos los archivos CTZ de escuelas
+        $sql = "SELECT a.*, u.nombre as escuela_nombre 
+                FROM archivos_ctz_escuelas a 
+                LEFT JOIN usuarios u ON a.escuela_id = u.escuela_id 
+                ORDER BY a.escuela_id";
+        $result = $conn->query($sql);
+        
+        if ($result->num_rows === 0) {
+            return "No hay archivos CTZ para consolidar";
+        }
+        
+        $hoja_index = 0;
+        while($archivo = $result->fetch_assoc()) {
+            if (!file_exists($archivo['ruta_archivo'])) {
+                continue;
+            }
+            
+            // Cargar archivo de cada escuela
+            $archivo_spreadsheet = IOFactory::load($archivo['ruta_archivo']);
+            $worksheet = $archivo_spreadsheet->getActiveSheet();
+            
+            // Crear nueva hoja en el consolidado
+            $nueva_hoja = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $archivo['escuela_nombre']);
+            $spreadsheet->addSheet($nueva_hoja, $hoja_index);
+            
+            // Copiar contenido
+            foreach ($worksheet->getRowIterator() as $row) {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(false);
+                
+                $fila_destino = $row->getRowIndex();
+                foreach ($cellIterator as $cell) {
+                    $columna_destino = $cell->getColumn();
+                    $nueva_hoja->setCellValue($columna_destino . $fila_destino, $cell->getCalculatedValue());
+                }
+            }
+            
+            // Agregar encabezado
+            $nueva_hoja->insertNewRowBefore(1, 2);
+            $nueva_hoja->setCellValue('A1', 'ESCUELA: ' . $archivo['escuela_nombre']);
+            $nueva_hoja->setCellValue('A2', 'CONSEJO TÉCNICO ESCOLAR - FECHA: ' . date('d/m/Y'));
+            
+            $hoja_index++;
+        }
+        
+        if ($hoja_index === 0) {
+            return "No se pudieron cargar archivos CTZ válidos";
+        }
+        
+        // Guardar archivo consolidado
+        $target_dir = "uploads/consolidados_ctz/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        
+        $nombre_archivo = "CONSOLIDADO_CTZ_" . date('Y-m-d') . ".xlsx";
+        $ruta_archivo = $target_dir . $nombre_archivo;
+        
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($ruta_archivo);
+        
+        // Guardar en base de datos
+        $sql_consolidado = "INSERT INTO consolidados_ctz (nombre_archivo, ruta_archivo, fecha_creacion) 
+                           VALUES ('$nombre_archivo', '$ruta_archivo', NOW())";
+        
+        if ($conn->query($sql_consolidado)) {
+            return "success:" . $nombre_archivo;
+        } else {
+            return "Error al guardar en base de datos: " . $conn->error;
+        }
+        
+    } catch (Exception $e) {
+        return "Error al consolidar archivos CTZ: " . $e->getMessage();
+    }
+}
+
 // ============================
 // PROCESAMIENTO DE FORMULARIOS
 // ============================
@@ -230,7 +490,7 @@ function getArchivoCTZMaestro($conn) {
 $login_error = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
     $email = $conn->real_escape_string($_POST['email']);
-    $password = $_POST['password'];
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
     
     $sql = "SELECT * FROM usuarios WHERE email = '$email'";
     $result = $conn->query($sql);
@@ -249,7 +509,116 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
     }
 }
 
-// Procesar gestión de destinatarios
+// Procesar consolidación de archivos
+if (isset($_GET['action'])) {
+    if (!isset($_SESSION['user']) || $_SESSION['user']['rol'] !== 'admin') {
+        die("No autorizado");
+    }
+    
+    $action = $_GET['action'];
+    
+    if ($action == 'merge' && isset($_GET['turno'])) {
+        $turno = $_GET['turno'];
+        $resultado = consolidarArchivosAsistencia($turno);
+        
+        if (strpos($resultado, 'success:') === 0) {
+            $nombre_archivo = str_replace('success:', '', $resultado);
+            echo "<script>alert('Archivos consolidados exitosamente: $nombre_archivo'); window.location.href = 'index.php#asistencia';</script>";
+        } else {
+            echo "<script>alert('Error: $resultado'); window.location.href = 'index.php#asistencia';</script>";
+        }
+        exit();
+    }
+    
+    if ($action == 'merge_trimestral') {
+        $resultado = consolidarArchivosTrimestrales();
+        
+        if (strpos($resultado, 'success:') === 0) {
+            $nombre_archivo = str_replace('success:', '', $resultado);
+            echo "<script>alert('Reportes trimestrales consolidados exitosamente: $nombre_archivo'); window.location.href = 'index.php#trimestral';</script>";
+        } else {
+            echo "<script>alert('Error: $resultado'); window.location.href = 'index.php#trimestral';</script>";
+        }
+        exit();
+    }
+    
+    if ($action == 'merge_ctz') {
+        $resultado = consolidarArchivosCTZ();
+        
+        if (strpos($resultado, 'success:') === 0) {
+            $nombre_archivo = str_replace('success:', '', $resultado);
+            echo "<script>alert('Documentos CTZ consolidados exitosamente: $nombre_archivo'); window.location.href = 'index.php#ctz';</script>";
+        } else {
+            echo "<script>alert('Error: $resultado'); window.location.href = 'index.php#ctz';</script>";
+        }
+        exit();
+    }
+    
+    // Envío de consolidados
+    if ($action == 'send_consolidated' && isset($_GET['id'])) {
+        $id = intval($_GET['id']);
+        
+        // Obtener información del consolidado
+        $sql = "SELECT * FROM consolidados WHERE id = $id";
+        $result = $conn->query($sql);
+        
+        if ($result->num_rows > 0) {
+            $consolidado = $result->fetch_assoc();
+            $resultado = enviarConcentradoPorCorreo($consolidado['ruta_archivo'], 'asistencia', $consolidado['turno']);
+            
+            if ($resultado == "Realizado exitosamente.") {
+                deleteConsolidatedAfterSend($id, $consolidado['ruta_archivo'], 'asistencia');
+                echo "<script>alert('Concentrado enviado exitosamente y eliminado del sistema'); window.location.href = 'index.php#asistencia';</script>";
+            } else {
+                echo "<script>alert('Error al enviar: $resultado'); window.location.href = 'index.php#asistencia';</script>";
+            }
+        }
+        exit();
+    }
+    
+    if ($action == 'send_consolidated_trimestral' && isset($_GET['id'])) {
+        $id = intval($_GET['id']);
+        
+        $sql = "SELECT * FROM consolidados_trimestrales WHERE id = $id";
+        $result = $conn->query($sql);
+        
+        if ($result->num_rows > 0) {
+            $consolidado = $result->fetch_assoc();
+            $resultado = enviarConcentradoPorCorreo($consolidado['ruta_archivo'], 'trimestral');
+            
+            if ($resultado == "Realizado exitosamente.") {
+                deleteConsolidatedAfterSend($id, $consolidado['ruta_archivo'], 'trimestral');
+                echo "<script>alert('Reporte trimestral enviado exitosamente y eliminado del sistema'); window.location.href = 'index.php#trimestral';</script>";
+            } else {
+                echo "<script>alert('Error al enviar: $resultado'); window.location.href = 'index.php#trimestral';</script>";
+            }
+        }
+        exit();
+    }
+    
+    if ($action == 'send_consolidated_ctz' && isset($_GET['id'])) {
+        $id = intval($_GET['id']);
+        
+        $sql = "SELECT * FROM consolidados_ctz WHERE id = $id";
+        $result = $conn->query($sql);
+        
+        if ($result->num_rows > 0) {
+            $consolidado = $result->fetch_assoc();
+            $resultado = enviarConcentradoPorCorreo($consolidado['ruta_archivo'], 'ctz');
+            
+            if ($resultado == "Realizado exitosamente.") {
+                deleteConsolidatedAfterSend($id, $consolidado['ruta_archivo'], 'ctz');
+                echo "<script>alert('Documento CTZ enviado exitosamente y eliminado del sistema'); window.location.href = 'index.php#ctz';</script>";
+            } else {
+                echo "<script>alert('Error al enviar: $resultado'); window.location.href = 'index.php#ctz';</script>";
+            }
+        }
+        exit();
+    }
+}
+
+// [El resto de tu código PHP permanece igual...]
+// Procesar gestión de destinatarios - VERSIÓN MEJORADA
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action_destinatarios'])) {
     if (!isset($_SESSION['user']) || $_SESSION['user']['rol'] !== 'admin') {
         die("No autorizado");
@@ -260,7 +629,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action_destinatarios']
     if ($action == 'agregar' && isset($_POST['email'])) {
         $email = $conn->real_escape_string($_POST['email']);
         
-        // Verificar si el email ya existe
         $sql_check = "SELECT id FROM destinatarios WHERE email = '$email'";
         $result_check = $conn->query($sql_check);
         
@@ -274,13 +642,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action_destinatarios']
                 echo "<script>alert('Error al agregar destinatario: " . $conn->error . "'); window.location.href = 'index.php#asistencia';</script>";
             }
         }
+        exit();
     }
     elseif ($action == 'actualizar_seleccion' && isset($_POST['destinatarios_seleccionados'])) {
-        // Primero, desactivar todos
         $sql_deactivate = "UPDATE destinatarios SET activo = 0";
         $conn->query($sql_deactivate);
         
-        // Luego activar solo los seleccionados
         $selected_ids = $_POST['destinatarios_seleccionados'];
         foreach ($selected_ids as $id) {
             $safe_id = intval($id);
@@ -289,6 +656,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action_destinatarios']
         }
         
         echo "<script>alert('Selección de destinatarios actualizada correctamente.'); window.location.href = 'index.php#asistencia';</script>";
+        exit();
     }
     elseif ($action == 'editar' && isset($_POST['id']) && isset($_POST['email'])) {
         $id = intval($_POST['id']);
@@ -300,6 +668,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action_destinatarios']
         } else {
             echo "<script>alert('Error al actualizar destinatario: " . $conn->error . "'); window.location.href = 'index.php#asistencia';</script>";
         }
+        exit();
     }
     elseif ($action == 'eliminar' && isset($_POST['id'])) {
         $id = intval($_POST['id']);
@@ -310,9 +679,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action_destinatarios']
         } else {
             echo "<script>alert('Error al eliminar destinatario: " . $conn->error . "'); window.location.href = 'index.php#asistencia';</script>";
         }
+        exit();
     }
 }
 
+// [El resto de tu código PHP permanece igual hasta el final...]
 // Procesar eliminación de archivos - CORREGIDO
 if (isset($_GET['delete_file'])) {
     if (!isset($_SESSION['user']) || $_SESSION['user']['rol'] !== 'admin') {
@@ -577,7 +948,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["excelFile"]) && isset
     }
 }
 
-// Procesar subida de archivos CTZ - CORREGIDO: Redirección mejorada con auto-refresh
+// Procesar subida de archivos CTZ - CORREGIDO: Redirección mejorada
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["ctzFile"]) && isset($_POST["action"]) && $_POST["action"] == 'upload_ctz') {
     if (!isset($_SESSION['user']) || $_SESSION['user']['rol'] !== 'admin') {
         die("No autorizado");
@@ -632,7 +1003,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["ctzFile"]) && isset($
     }
 }
 
-// Procesar subida de archivos CTZ por escuelas - CORREGIDO: Redirección mejorada con auto-refresh
+// Procesar subida de archivos CTZ por escuelas - CORREGIDO: Redirección mejorada
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["ctzFile"]) && isset($_POST["action"]) && $_POST["action"] == 'upload_ctz_escuela') {
     if (!isset($_SESSION['user'])) {
         die("No autenticado");
@@ -898,7 +1269,6 @@ $js_config = [
     'isAdmin' => isset($_SESSION['user']) && $_SESSION['user']['rol'] === 'admin',
     'hasSession' => isset($_SESSION['user'])
 ];
-
 ?>
 
 <!DOCTYPE html>
@@ -1208,7 +1578,7 @@ $js_config = [
                             <?php endif; ?>
                         </div>
 
-                        <!-- Gestión de destinatarios -->
+                        <!-- Gestión de destinatarios - ESTILO UNIFICADO -->
                         <div class="destinatarios-container">
                             <h3>Gestión de Destinatarios</h3>
                             <p>Seleccione los correos a los que se enviarán los concentrados</p>
@@ -1319,7 +1689,7 @@ $js_config = [
             
             <!-- Eventos Tab -->
             <div id="eventos" class="tab-content">
-                <div class="hero">
+                <div class="hero eventos-hero">
                     <h2>Eventos y Reuniones</h2>
                     <p>Próximos eventos y actividades de la zona escolar</p>
                 </div>
@@ -1358,7 +1728,7 @@ $js_config = [
 
             <!-- Reportes Trimestrales Tab -->
             <div id="trimestral" class="tab-content">
-                <div class="hero">
+                <div class="hero trimestral-hero">
                     <h2>Reportes Trimestrales</h2>
                     <p>Gestión de reportes trimestrales de asistencia</p>
                 </div>
@@ -1452,7 +1822,7 @@ $js_config = [
                         <?php endif; ?>
                     </div>
 
-                    <!-- Gestión de destinatarios para trimestral -->
+                    <!-- Gestión de destinatarios para trimestral - ESTILO UNIFICADO -->
                     <div class="destinatarios-container">
                         <h3>Gestión de Destinatarios</h3>
                         <p>Lista de correos a los que se enviarán los concentrados trimestrales</p>
@@ -1464,28 +1834,51 @@ $js_config = [
                             <button type="submit" class="btn btn-primary">Agregar</button>
                         </form>
                         
-                        <!-- Lista de destinatarios -->
+                        <!-- Lista de destinatarios con checkboxes -->
                         <div class="destinatarios-list">
                             <?php if (!empty($destinatarios)): ?>
-                                <?php foreach ($destinatarios as $destinatario): ?>
-                                    <div class="destinatario-item">
-                                        <div class="destinatario-info">
-                                            <div><?php echo htmlspecialchars($destinatario['email']); ?></div>
-                                        </div>
-                                        <div class="destinatario-actions">
-                                            <button class="btn-icon" onclick="editarDestinatario(<?php echo $destinatario['id']; ?>, '<?php echo $destinatario['email']; ?>')" title="Editar">
-                                                <i class="fas fa-edit" style="color: #521426;"></i>
-                                            </button>
-                                            <form method="POST" action="" style="display:inline;">
-                                                <input type="hidden" name="action_destinatarios" value="eliminar">
-                                                <input type="hidden" name="id" value="<?php echo $destinatario['id']; ?>">
-                                                <button type="submit" class="btn-icon" onclick="return confirm('¿Está seguro de eliminar este destinatario?')" title="Eliminar">
-                                                    <i class="fas fa-trash" style="color: #521426;"></i>
-                                                </button>
-                                            </form>
+                                <form method="POST" action="" id="destinatariosFormTrimestral">
+                                    <input type="hidden" name="action_destinatarios" value="actualizar_seleccion">
+                                    <div class="destinatarios-header">
+                                        <h4>Destinatarios Disponibles</h4>
+                                        <div class="destinatarios-actions">
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="seleccionarTodos()">Seleccionar Todos</button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="deseleccionarTodos()">Limpiar Selección</button>
                                         </div>
                                     </div>
-                                <?php endforeach; ?>
+                                    
+                                    <?php foreach ($destinatarios as $destinatario): ?>
+                                        <div class="destinatario-item">
+                                            <label class="destinatario-checkbox">
+                                                <input type="checkbox" name="destinatarios_seleccionados[]" 
+                                                       value="<?php echo $destinatario['id']; ?>" 
+                                                       <?php echo $destinatario['activo'] ? 'checked' : ''; ?>>
+                                                <span class="checkmark"></span>
+                                            </label>
+                                            <div class="destinatario-info">
+                                                <div class="destinatario-email"><?php echo htmlspecialchars($destinatario['email']); ?></div>
+                                                <div class="destinatario-status">
+                                                    <span class="status-badge <?php echo $destinatario['activo'] ? 'status-active' : 'status-inactive'; ?>">
+                                                        <?php echo $destinatario['activo'] ? 'Activo' : 'Inactivo'; ?>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="destinatario-actions">
+                                                <button type="button" class="btn-icon" onclick="editarDestinatario(<?php echo $destinatario['id']; ?>, '<?php echo $destinatario['email']; ?>')" title="Editar">
+                                                    <i class="fas fa-edit" style="color: #521426;"></i>
+                                                </button>
+                                                <button type="button" class="btn-icon" onclick="eliminarDestinatario(<?php echo $destinatario['id']; ?>)" title="Eliminar">
+                                                    <i class="fas fa-trash" style="color: #521426;"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                    
+                                    <div class="destinatarios-footer">
+                                        <button type="submit" class="btn btn-primary">Guardar Selección</button>
+                                        <span class="selection-info" id="selectionInfoTrimestral">0 seleccionados</span>
+                                    </div>
+                                </form>
                             <?php else: ?>
                                 <p>No hay destinatarios registrados.</p>
                             <?php endif; ?>
@@ -1582,7 +1975,7 @@ $js_config = [
 
             <!-- CTZ Tab -->
             <div id="ctz" class="tab-content">
-                <div class="hero">
+                <div class="hero ctz-hero">
                     <h2>Consejos Técnicos Escolares</h2>
                     <p>Información y recursos para los consejos técnicos escolares</p>
                 </div>
@@ -1731,7 +2124,7 @@ $js_config = [
                         <?php endif; ?>
                     </div>
 
-                    <!-- Gestión de destinatarios para CTZ -->
+                    <!-- Gestión de destinatarios para CTZ - ESTILO UNIFICADO -->
                     <div class="destinatarios-container">
                         <h3>Gestión de Destinatarios</h3>
                         <p>Lista de correos a los que se enviarán los documentos CTE</p>
@@ -1743,28 +2136,51 @@ $js_config = [
                             <button type="submit" class="btn btn-primary">Agregar</button>
                         </form>
                         
-                        <!-- Lista de destinatarios -->
+                        <!-- Lista de destinatarios con checkboxes -->
                         <div class="destinatarios-list">
                             <?php if (!empty($destinatarios)): ?>
-                                <?php foreach ($destinatarios as $destinatario): ?>
-                                    <div class="destinatario-item">
-                                        <div class="destinatario-info">
-                                            <div><?php echo htmlspecialchars($destinatario['email']); ?></div>
-                                        </div>
-                                        <div class="destinatario-actions">
-                                            <button class="btn-icon" onclick="editarDestinatario(<?php echo $destinatario['id']; ?>, '<?php echo $destinatario['email']; ?>')" title="Editar">
-                                                <i class="fas fa-edit" style="color: #521426;"></i>
-                                            </button>
-                                            <form method="POST" action="" style="display:inline;">
-                                                <input type="hidden" name="action_destinatarios" value="eliminar">
-                                                <input type="hidden" name="id" value="<?php echo $destinatario['id']; ?>">
-                                                <button type="submit" class="btn-icon" onclick="return confirm('¿Está seguro de eliminar este destinatario?')" title="Eliminar">
-                                                    <i class="fas fa-trash" style="color: #521426;"></i>
-                                                </button>
-                                            </form>
+                                <form method="POST" action="" id="destinatariosFormCTZ">
+                                    <input type="hidden" name="action_destinatarios" value="actualizar_seleccion">
+                                    <div class="destinatarios-header">
+                                        <h4>Destinatarios Disponibles</h4>
+                                        <div class="destinatarios-actions">
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="seleccionarTodos()">Seleccionar Todos</button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="deseleccionarTodos()">Limpiar Selección</button>
                                         </div>
                                     </div>
-                                <?php endforeach; ?>
+                                    
+                                    <?php foreach ($destinatarios as $destinatario): ?>
+                                        <div class="destinatario-item">
+                                            <label class="destinatario-checkbox">
+                                                <input type="checkbox" name="destinatarios_seleccionados[]" 
+                                                       value="<?php echo $destinatario['id']; ?>" 
+                                                       <?php echo $destinatario['activo'] ? 'checked' : ''; ?>>
+                                                <span class="checkmark"></span>
+                                            </label>
+                                            <div class="destinatario-info">
+                                                <div class="destinatario-email"><?php echo htmlspecialchars($destinatario['email']); ?></div>
+                                                <div class="destinatario-status">
+                                                    <span class="status-badge <?php echo $destinatario['activo'] ? 'status-active' : 'status-inactive'; ?>">
+                                                        <?php echo $destinatario['activo'] ? 'Activo' : 'Inactivo'; ?>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="destinatario-actions">
+                                                <button type="button" class="btn-icon" onclick="editarDestinatario(<?php echo $destinatario['id']; ?>, '<?php echo $destinatario['email']; ?>')" title="Editar">
+                                                    <i class="fas fa-edit" style="color: #521426;"></i>
+                                                </button>
+                                                <button type="button" class="btn-icon" onclick="eliminarDestinatario(<?php echo $destinatario['id']; ?>)" title="Eliminar">
+                                                    <i class="fas fa-trash" style="color: #521426;"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                    
+                                    <div class="destinatarios-footer">
+                                        <button type="submit" class="btn btn-primary">Guardar Selección</button>
+                                        <span class="selection-info" id="selectionInfoCTZ">0 seleccionados</span>
+                                    </div>
+                                </form>
                             <?php else: ?>
                                 <p>No hay destinatarios registrados.</p>
                             <?php endif; ?>
@@ -1895,7 +2311,7 @@ $js_config = [
             
             <!-- Repositorio Tab -->
             <div id="repositorio" class="tab-content">
-                <div class="hero">
+                <div class="hero repositorio-hero">
                     <h2>Repositorio de Documentos</h2>
                     <p>Documentos y recursos disponibles para la zona escolar</p>
                 </div>
@@ -1943,7 +2359,7 @@ $js_config = [
             <form id="uploadForm" method="POST" action="" enctype="multipart/form-data" onsubmit="handleUploadSubmit(event)">
                 <input type="hidden" id="schoolIdInput" name="schoolId" value="<?php echo isset($_SESSION['user']) ? $_SESSION['user']['escuela_id'] : ''; ?>">
                 <input type="hidden" id="turnoInput" name="turno" value="">
-                <div class="form-group">
+                <div class="form-group modal-form-group">
                     <label for="excelFile">Seleccione archivo Excel</label>
                     <input type="file" id="excelFile" name="excelFile" accept=".xlsx, .xls" required>
                     <p class="file-type-warning">Solo se permiten archivos .xlsx or .xls</p>
@@ -1967,7 +2383,7 @@ $js_config = [
             </div>
             <form method="POST" action="" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="upload_ctz">
-                <div class="form-group">
+                <div class="form-group modal-form-group">
                     <label for="ctzFile">Seleccione archivo Excel</label>
                     <input type="file" id="ctzFile" name="ctzFile" accept=".xlsx, .xls" required>
                     <p class="file-type-warning">Solo se permiten archivos .xlsx or .xls</p>
@@ -1992,7 +2408,7 @@ $js_config = [
             <form method="POST" action="" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="upload_ctz_escuela">
                 <input type="hidden" id="ctzSchoolIdInput" name="schoolId" value="">
-                <div class="form-group">
+                <div class="form-group modal-form-group">
                     <label for="ctzFileEscuela">Seleccione archivo Excel contestado</label>
                     <input type="file" id="ctzFileEscuela" name="ctzFile" accept=".xlsx, .xls" required>
                     <p class="file-type-warning">Solo se permiten archivos .xlsx or .xls</p>
