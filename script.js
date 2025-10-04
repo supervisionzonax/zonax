@@ -72,6 +72,52 @@ class SistemaAsistencia {
         
         // CORRECCIÓN ESPECÍFICA: Eliminar espacios en blanco definitivamente
         this.applyDefinitiveSpacingFix();
+        
+        // CORRECCIÓN ESPECÍFICA: Aplicar diseño horizontal en móviles
+        this.applyHorizontalLayoutForMobile();
+    }
+
+    // NUEVA FUNCIÓN: Aplicar diseño horizontal específico para móviles
+    applyHorizontalLayoutForMobile() {
+        if (!this.isMobile) return;
+        
+        const uploadStatuses = document.querySelectorAll('.upload-status');
+        uploadStatuses.forEach(status => {
+            // Forzar diseño horizontal
+            status.style.flexDirection = 'row';
+            status.style.flexWrap = 'nowrap';
+            status.style.alignItems = 'center';
+            status.style.justifyContent = 'space-between';
+            status.style.gap = '4px';
+            status.style.overflowX = 'auto';
+            
+            // Ajustar contenedor de status
+            const statusContainer = status.querySelector('.status-container');
+            if (statusContainer) {
+                statusContainer.style.flexDirection = 'row';
+                statusContainer.style.flexWrap = 'nowrap';
+                statusContainer.style.alignItems = 'center';
+                statusContainer.style.gap = '6px';
+                statusContainer.style.flexShrink = '0';
+            }
+            
+            // Ajustar iconos de status
+            const statusIcons = status.querySelector('.status-icons');
+            if (statusIcons) {
+                statusIcons.style.flexDirection = 'row';
+                statusIcons.style.flexWrap = 'nowrap';
+                statusIcons.style.alignItems = 'center';
+                statusIcons.style.gap = '3px';
+                statusIcons.style.flexShrink = '0';
+            }
+            
+            // Ajustar botones para móvil
+            const buttons = status.querySelectorAll('.btn-sm, .view-file-btn, .btn-icon');
+            buttons.forEach(button => {
+                button.style.whiteSpace = 'nowrap';
+                button.style.flexShrink = '0';
+            });
+        });
     }
 
     // NUEVA FUNCIÓN: Corrección definitiva de espaciado
@@ -150,6 +196,9 @@ class SistemaAsistencia {
             if (!window.appConfig.isAdmin) {
                 this.fixNormalUserMobileSpacing();
             }
+            
+            // Aplicar diseño horizontal específico
+            this.applyHorizontalLayoutForMobile();
         } else {
             // Aplicar márgenes en desktop
             const bannerContainer = document.querySelector('.banner-container');
@@ -277,6 +326,7 @@ class SistemaAsistencia {
                 this.fixEventosRepositorioSpacing();
                 this.applyEventosRepositorioFix();
                 this.applyDefinitiveSpacingFix();
+                this.applyHorizontalLayoutForMobile(); // Aplicar diseño horizontal
             }, 250);
         });
     }
@@ -317,6 +367,9 @@ class SistemaAsistencia {
         
         // Aplicar corrección definitiva
         this.applyDefinitiveSpacingFix();
+        
+        // Aplicar diseño horizontal específico
+        this.applyHorizontalLayoutForMobile();
     }
 
     applyDesktopOptimizations() {
@@ -371,23 +424,23 @@ class SistemaAsistencia {
         
         ctzUploadSections.forEach(section => {
             if (this.isMobile) {
-                section.style.flexDirection = 'column';
-                section.style.alignItems = 'stretch';
+                section.style.flexDirection = 'row'; // Cambiado de column a row
+                section.style.alignItems = 'center';
                 section.style.gap = '4px';
                 
                 const statusIcons = section.querySelector('.status-icons');
                 if (statusIcons) {
-                    statusIcons.style.width = '100%';
-                    statusIcons.style.justifyContent = 'center';
-                    statusIcons.style.flexWrap = 'wrap';
+                    statusIcons.style.width = 'auto';
+                    statusIcons.style.justifyContent = 'flex-end';
+                    statusIcons.style.flexWrap = 'nowrap';
                     statusIcons.style.gap = '3px';
                     
                     const buttons = statusIcons.querySelectorAll('.btn');
                     buttons.forEach(btn => {
-                        btn.style.flex = '1';
-                        btn.style.minWidth = '100px';
+                        btn.style.flex = 'none';
+                        btn.style.minWidth = 'auto';
                         btn.style.textAlign = 'center';
-                        btn.style.margin = '1px';
+                        btn.style.margin = '0';
                     });
                 }
             }
@@ -530,6 +583,7 @@ class SistemaAsistencia {
             this.fixEventosRepositorioSpacing();
             this.applyEventosRepositorioFix();
             this.applyDefinitiveSpacingFix();
+            this.applyHorizontalLayoutForMobile(); // Aplicar diseño horizontal
         }, 100);
     }
 
@@ -657,6 +711,9 @@ class SistemaAsistencia {
         
         // Aplicar corrección definitiva
         this.applyDefinitiveSpacingFix();
+        
+        // Aplicar diseño horizontal específico
+        this.applyHorizontalLayoutForMobile();
     }
 
     applyMobileSpacing() {
@@ -791,6 +848,9 @@ class SistemaAsistencia {
         
         // Aplicar corrección definitiva
         this.applyDefinitiveSpacingFix();
+        
+        // Aplicar diseño horizontal específico
+        this.applyHorizontalLayoutForMobile();
     }
 
     // Funciones para gestión de destinatarios
@@ -1060,13 +1120,13 @@ class SistemaAsistencia {
     }
 
     deleteFileCTZ(fileId) {
-        if (confirm('¿Está seguro de eliminar este documento CTZ? Esta acción no se puede deshacer.')) {
+        if (confirm('¿Está seguro de eliminar este documento CTE? Esta acción no se puede deshacer.')) {
             window.location.href = `?delete_file_ctz=${fileId}`;
         }
     }
 
     deleteFileCTZEscuela(fileId) {
-        if (confirm('¿Está seguro de eliminar este documento CTZ? Esta acción no se puede deshacer.')) {
+        if (confirm('¿Está seguro de eliminar este documento CTE? Esta acción no se puede deshacer.')) {
             window.location.href = `?delete_file_ctz_escuela=${fileId}`;
         }
     }
@@ -1087,7 +1147,7 @@ class SistemaAsistencia {
     }
 
     mergeFilesCTZ() {
-        if (confirm('¿Está seguro de que desea consolidar los documentos CTZ?')) {
+        if (confirm('¿Está seguro de que desea consolidar los documentos CTE?')) {
             this.showLoadingState('mergeBtnCTZ', 'mergeSpinnerCTZ');
             window.location.href = `?action=merge_ctz`;
         }
@@ -1115,7 +1175,7 @@ class SistemaAsistencia {
     }
 
     sendConsolidatedCTZ(id) {
-        if (confirm('¿Está seguro de que desea enviar este concentrado CTZ a los destinatarios? El archivo se eliminará después del envío.')) {
+        if (confirm('¿Está seguro de que desea enviar este concentrado CTE a los destinatarios? El archivo se eliminará después del envío.')) {
             window.location.href = `?action=send_consolidated_ctz&id=${id}`;
         }
     }
@@ -1144,12 +1204,12 @@ class SistemaAsistencia {
         if (currentTurnElement && turnTimeElement && nextTurnInfoElement) {
             if (hours < 13 || (hours === 13 && minutes < 40)) {
                 currentTurnElement.textContent = 'Matutino';
-                turnTimeElement.textContent = '07:30 AM';
-                nextTurnInfoElement.textContent = 'Próximo turno: Vespertino a las 13:40';
+                turnTimeElement.textContent = '08:00 A.M.';
+                nextTurnInfoElement.textContent = 'Próximo turno: Vespertino inicia a las 01:00 P.M.';
             } else {
                 currentTurnElement.textContent = 'Vespertino';
-                turnTimeElement.textContent = '01:40 PM';
-                nextTurnInfoElement.textContent = 'Turno vespertino en curso';
+                turnTimeElement.textContent = '02:00 PM';
+                nextTurnInfoElement.textContent = 'Próximo turno: Vespertino inicia a las 07:00 A.M.';
             }
         }
     }
@@ -1216,21 +1276,18 @@ class SistemaAsistencia {
                     icons.style.flexDirection = 'row';
                     icons.style.justifyContent = 'flex-end';
                 } else {
-                    icons.style.flexDirection = 'column';
-                    icons.style.alignItems = 'stretch';
+                    icons.style.flexDirection = 'row'; // Siempre horizontal
+                    icons.style.alignItems = 'center';
+                    icons.style.overflowX = 'auto';
                 }
             });
 
             // Ajustar espaciado en upload-status
             const uploadStatuses = document.querySelectorAll('.upload-status');
             uploadStatuses.forEach(status => {
-                if (window.innerWidth > 400) {
-                    status.style.flexDirection = 'row';
-                    status.style.justifyContent = 'space-between';
-                } else {
-                    status.style.flexDirection = 'column';
-                    status.style.alignItems = 'stretch';
-                }
+                status.style.flexDirection = 'row'; // Siempre horizontal
+                status.style.justifyContent = 'space-between';
+                status.style.overflowX = 'auto';
             });
         }
     }
@@ -1265,6 +1322,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.sistemaAsistencia.fixEventosRepositorioSpacing();
         window.sistemaAsistencia.applyEventosRepositorioFix();
         window.sistemaAsistencia.applyDefinitiveSpacingFix();
+        window.sistemaAsistencia.applyHorizontalLayoutForMobile(); // Aplicar diseño horizontal
         
         // Mostrar mensajes de sesión si existen
         if (typeof window.message !== 'undefined') {
@@ -1408,11 +1466,19 @@ function applyDefinitiveSpacingFix() {
     }
 }
 
+// Función global para diseño horizontal en móviles
+function applyHorizontalLayoutForMobile() {
+    if (window.sistemaAsistencia) {
+        window.sistemaAsistencia.applyHorizontalLayoutForMobile();
+    }
+}
+
 // Ejecutar inmediatamente y en cada cambio
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         forceEventosRepositorioFix();
         applyDefinitiveSpacingFix();
+        applyHorizontalLayoutForMobile();
     }, 100);
 });
 
@@ -1422,6 +1488,7 @@ document.addEventListener('click', function(e) {
         setTimeout(() => {
             forceEventosRepositorioFix();
             applyDefinitiveSpacingFix();
+            applyHorizontalLayoutForMobile();
         }, 300);
     }
 });
@@ -1463,6 +1530,7 @@ window.addEventListener('resize', function() {
             window.sistemaAsistencia.fixEventosRepositorioSpacing();
             window.sistemaAsistencia.applyEventosRepositorioFix();
             window.sistemaAsistencia.applyDefinitiveSpacingFix();
+            window.sistemaAsistencia.applyHorizontalLayoutForMobile(); // Aplicar diseño horizontal
         }
     }, 250);
 });
@@ -1480,6 +1548,7 @@ document.addEventListener('click', function(e) {
                 window.sistemaAsistencia.fixEventosRepositorioSpacing();
                 window.sistemaAsistencia.applyEventosRepositorioFix();
                 window.sistemaAsistencia.applyDefinitiveSpacingFix();
+                window.sistemaAsistencia.applyHorizontalLayoutForMobile(); // Aplicar diseño horizontal
             }
         }, 300);
     }

@@ -142,10 +142,10 @@ function enviarConcentradoPorCorreo($rutaArchivo, $tipo, $turno = '') {
             <p>Saludos,<br><strong>Sistema de Asistencia Zona X</strong></p>
         ";
     } elseif ($tipo == 'ctz') {
-        $asunto = "Concentrado de Documentos CTZ - " . date('d/m/Y');
+        $asunto = "Concentrado de Documentos CTE - " . date('d/m/Y');
         $cuerpo = "
             <h2>Concentrado de Consejos Técnicos Escolares</h2>
-            <p>Se adjunta el concentrado de documentos CTZ correspondiente 
+            <p>Se adjunta el concentrado de documentos CTE correspondiente 
             a la fecha <strong>" . date('d/m/Y') . "</strong>.</p>
             <p>Este archivo contiene los documentos de todas las escuelas 
             relacionadas con los Consejos Técnicos Escolares.</p>
@@ -211,13 +211,13 @@ function getArchivoCTZMaestro($conn) {
                 
                 // VERIFICAR QUE EL ARCHIVO EXISTA FÍSICAMENTE
                 if ($archivo_ctz_maestro && !file_exists($archivo_ctz_maestro['ruta_archivo'])) {
-                    error_log("Archivo CTZ no encontrado: " . $archivo_ctz_maestro['ruta_archivo']);
+                    error_log("Archivo CTE no encontrado: " . $archivo_ctz_maestro['ruta_archivo']);
                     return null;
                 }
             }
         }
     } catch (Exception $e) {
-        error_log("Error al obtener archivo CTZ maestro: " . $e->getMessage());
+        error_log("Error al obtener archivo CTE maestro: " . $e->getMessage());
     }
     return $archivo_ctz_maestro;
 }
@@ -414,7 +414,7 @@ function consolidarArchivosCTZ() {
         $result = $conn->query($sql);
         
         if ($result->num_rows === 0) {
-            return "No hay archivos CTZ para consolidar";
+            return "No hay archivos CTE para consolidar";
         }
         
         $hoja_index = 0;
@@ -452,7 +452,7 @@ function consolidarArchivosCTZ() {
         }
         
         if ($hoja_index === 0) {
-            return "No se pudieron cargar archivos CTZ válidos";
+            return "No se pudieron cargar archivos CTE válidos";
         }
         
         // Guardar archivo consolidado
@@ -478,7 +478,7 @@ function consolidarArchivosCTZ() {
         }
         
     } catch (Exception $e) {
-        return "Error al consolidar archivos CTZ: " . $e->getMessage();
+        return "Error al consolidar archivos CTE: " . $e->getMessage();
     }
 }
 
@@ -547,7 +547,7 @@ if (isset($_GET['action'])) {
         
         if (strpos($resultado, 'success:') === 0) {
             $nombre_archivo = str_replace('success:', '', $resultado);
-            echo "<script>alert('Documentos CTZ consolidados exitosamente: $nombre_archivo'); window.location.href = 'index.php#ctz';</script>";
+            echo "<script>alert('Documentos CTE consolidados exitosamente: $nombre_archivo'); window.location.href = 'index.php#ctz';</script>";
         } else {
             echo "<script>alert('Error: $resultado'); window.location.href = 'index.php#ctz';</script>";
         }
@@ -608,7 +608,7 @@ if (isset($_GET['action'])) {
             
             if ($resultado == "Realizado exitosamente.") {
                 deleteConsolidatedAfterSend($id, $consolidado['ruta_archivo'], 'ctz');
-                echo "<script>alert('Documento CTZ enviado exitosamente y eliminado del sistema'); window.location.href = 'index.php#ctz';</script>";
+                echo "<script>alert('Documento CTE enviado exitosamente y eliminado del sistema'); window.location.href = 'index.php#ctz';</script>";
             } else {
                 echo "<script>alert('Error al enviar: $resultado'); window.location.href = 'index.php#ctz';</script>";
             }
@@ -617,8 +617,7 @@ if (isset($_GET['action'])) {
     }
 }
 
-// [El resto de tu código PHP permanece igual...]
-// Procesar gestión de destinatarios - VERSIÓN MEJORADA
+// Procesar gestión de destinatarios - VERSIÓN MEJORADA CON REFRESH
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action_destinatarios'])) {
     if (!isset($_SESSION['user']) || $_SESSION['user']['rol'] !== 'admin') {
         die("No autorizado");
@@ -683,7 +682,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action_destinatarios']
     }
 }
 
-// [El resto de tu código PHP permanece igual hasta el final...]
 // Procesar eliminación de archivos - CORREGIDO
 if (isset($_GET['delete_file'])) {
     if (!isset($_SESSION['user']) || $_SESSION['user']['rol'] !== 'admin') {
@@ -776,7 +774,7 @@ if (isset($_GET['delete_file_ctz'])) {
         // Eliminar registro de la base de datos
         $sql_delete = "DELETE FROM archivos_ctz WHERE id = $fileId";
         if ($conn->query($sql_delete)) {
-            echo "<script>alert('Documento CTZ eliminado correctamente'); window.location.href = 'index.php#ctz';</script>";
+            echo "<script>alert('Documento CTE eliminado correctamente'); window.location.href = 'index.php#ctz';</script>";
             exit();
         } else {
             echo "<script>alert('Error al eliminar el archivo de la base de datos'); window.location.href = 'index.php#ctz';</script>";
@@ -810,7 +808,7 @@ if (isset($_GET['delete_file_ctz_escuela'])) {
         // Eliminar registro de la base de datos
         $sql_delete = "DELETE FROM archivos_ctz_escuelas WHERE id = $fileId";
         if ($conn->query($sql_delete)) {
-            echo "<script>alert('Documento CTZ de escuela eliminado correctamente'); window.location.href = 'index.php#ctz';</script>";
+            echo "<script>alert('Documento CTE de escuela eliminado correctamente'); window.location.href = 'index.php#ctz';</script>";
             exit();
         } else {
             echo "<script>alert('Error al eliminar el archivo de la base de datos'); window.location.href = 'index.php#ctz';</script>";
@@ -820,7 +818,7 @@ if (isset($_GET['delete_file_ctz_escuela'])) {
     }
 }
 
-// Procesar subida de archivos diarios
+// Procesar subida de archivos diarios - CON REFRESH MEJORADO
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["excelFile"]) && isset($_POST["turno"]) && $_POST["turno"] != 'trimestral') {
     if (!isset($_SESSION['user'])) {
         die("No autenticado");
@@ -879,7 +877,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["excelFile"]) && isset
             }
             
             if ($conn->query($sql)) {
-                echo "<script>alert('Archivo subido y procesado correctamente'); window.location.href = 'index.php';</script>";
+                // REFRESH COMPLETO CORREGIDO - REDIRECCIÓN DIRECTA
+                header("Location: index.php?success=1");
                 exit();
             } else {
                 echo "<script>alert('Error al guardar en base de datos: " . $conn->error . "'); window.location.href = 'index.php';</script>";
@@ -892,7 +891,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["excelFile"]) && isset
     }
 }
 
-// Procesar subida de archivos trimestrales
+// Procesar subida de archivos trimestrales - CON REFRESH MEJORADO
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["excelFile"]) && isset($_POST["turno"]) && $_POST["turno"] == 'trimestral') {
     if (!isset($_SESSION['user'])) {
         die("No autenticado");
@@ -938,7 +937,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["excelFile"]) && isset
         }
         
         if ($conn->query($sql)) {
-            echo "<script>alert('Reporte trimestral subido correctamente'); window.location.href = 'index.php#trimestral';</script>";
+            // REFRESH COMPLETO CORREGIDO - REDIRECCIÓN DIRECTA
+            header("Location: index.php#trimestral&success=1");
             exit();
         } else {
             echo "<script>alert('Error al guardar en base de datos: " . $conn->error . "'); window.location.href = 'index.php#trimestral';</script>";
@@ -948,7 +948,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["excelFile"]) && isset
     }
 }
 
-// Procesar subida de archivos CTZ - CORREGIDO: Redirección mejorada
+// Procesar subida de archivos CTZ - CORREGIDO: Redirección mejorada CON REFRESH
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["ctzFile"]) && isset($_POST["action"]) && $_POST["action"] == 'upload_ctz') {
     if (!isset($_SESSION['user']) || $_SESSION['user']['rol'] !== 'admin') {
         die("No autorizado");
@@ -991,7 +991,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["ctzFile"]) && isset($
         }
         
         if ($conn->query($sql)) {
-            echo "<script>alert('Documento CTZ subido correctamente'); window.location.href = 'index.php#ctz';</script>";
+            // REFRESH COMPLETO CORREGIDO - REDIRECCIÓN DIRECTA
+            header("Location: index.php#ctz&success=1");
             exit();
         } else {
             echo "<script>alert('Error al guardar en base de datos: " . $conn->error . "'); window.location.href = 'index.php#ctz';</script>";
@@ -1003,7 +1004,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["ctzFile"]) && isset($
     }
 }
 
-// Procesar subida de archivos CTZ por escuelas - CORREGIDO: Redirección mejorada
+// Procesar subida de archivos CTZ por escuelas - CORREGIDO: Redirección mejorada CON REFRESH
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["ctzFile"]) && isset($_POST["action"]) && $_POST["action"] == 'upload_ctz_escuela') {
     if (!isset($_SESSION['user'])) {
         die("No autenticado");
@@ -1048,7 +1049,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["ctzFile"]) && isset($
         }
         
         if ($conn->query($sql)) {
-            echo "<script>alert('Documento CTZ subido correctamente'); window.location.href = 'index.php#ctz';</script>";
+            // REFRESH COMPLETO CORREGIDO - REDIRECCIÓN DIRECTA
+            header("Location: index.php#ctz&success=1");
             exit();
         } else {
             echo "<script>alert('Error al guardar en base de datos: " . $conn->error . "'); window.location.href = 'index.php#ctz';</script>";
@@ -1141,7 +1143,7 @@ try {
         }
     }
 } catch (Exception $e) {
-    error_log("Error al obtener historial CTZ: " . $e->getMessage());
+    error_log("Error al obtener historial CTE: " . $e->getMessage());
 }
 
 // Obtener archivos consolidados
@@ -1236,7 +1238,7 @@ if (isset($_SESSION['user'])) {
             }
         }
     } catch (Exception $e) {
-        error_log("Error al obtener archivos CTZ escuelas: " . $e->getMessage());
+        error_log("Error al obtener archivos CTE escuelas: " . $e->getMessage());
     }
 }
 
@@ -1259,8 +1261,13 @@ if (isset($_SESSION['user']) && $_SESSION['user']['rol'] === 'admin') {
             }
         }
     } catch (Exception $e) {
-        error_log("Error al obtener consolidados CTZ: " . $e->getMessage());
+        error_log("Error al obtener consolidados CTE: " . $e->getMessage());
     }
+}
+
+// Mostrar mensaje de éxito si existe
+if (isset($_GET['success'])) {
+    echo "<script>alert('Operación realizada exitosamente');</script>";
 }
 
 // Configuración para JavaScript
@@ -1331,7 +1338,7 @@ $js_config = [
     <?php endif; ?>
     
     <!-- Main Content -->
-    <div class="container main-content">
+    <div class="container">
         <?php if (!isset($_SESSION['user'])): ?>
             <!-- Banner Section (visible por defecto) -->
             <div class="banner-container" id="bannerContainer">

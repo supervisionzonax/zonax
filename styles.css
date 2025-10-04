@@ -182,9 +182,9 @@ header {
     justify-content: center;
     align-items: center;
     min-height: 50vh;
-    margin: 0;
     padding: 0;
     flex: 1;
+    margin-top: 20px;
 }
 
 .login-box {
@@ -195,6 +195,7 @@ header {
     width: 100%;
     max-width: 380px;
     margin: 0 auto;
+    margin-top: 40px;
 }
 
 .login-header {
@@ -459,6 +460,7 @@ header {
     font-size: 0.85rem;
 }
 
+/* CORRECCIÓN ESPECÍFICA: Upload status en una línea horizontal en móviles */
 .upload-status {
     display: flex;
     justify-content: space-between;
@@ -469,7 +471,7 @@ header {
     border-radius: 6px;
     border: 1px solid #eee;
     transition: all 0.3s ease;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* Cambiado de wrap a nowrap */
     gap: 5px;
 }
 
@@ -508,8 +510,9 @@ header {
     display: flex;
     align-items: center;
     gap: 5px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* Cambiado de wrap a nowrap */
     justify-content: flex-end;
+    flex-shrink: 0;
 }
 
 .view-file-btn, .btn-icon {
@@ -561,13 +564,15 @@ header {
     display: flex;
     align-items: center;
     gap: 6px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* Cambiado de wrap a nowrap */
+    flex-shrink: 0;
 }
 
 .file-date {
     font-size: 0.65rem;
     color: #666;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 /* Merge Section */
@@ -1390,6 +1395,78 @@ body:not(.admin-user) .hero {
     margin-bottom: 10px;
 }
 
+/* CORRECCIÓN ESPECÍFICA: Upload status en línea horizontal para móviles */
+@media (max-width: 768px) {
+    .upload-status {
+        flex-direction: row !important; /* Forzar dirección horizontal */
+        flex-wrap: nowrap !important; /* Evitar que se rompa en varias líneas */
+        align-items: center;
+        justify-content: space-between;
+        gap: 4px;
+        overflow-x: auto; /* Permitir scroll horizontal si es necesario */
+    }
+
+    .status-container {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .status-icons {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 3px;
+        flex-shrink: 0;
+    }
+
+    .status {
+        min-width: 65px;
+        font-size: 0.65rem;
+        padding: 2px 6px;
+    }
+
+    .file-date {
+        font-size: 0.6rem;
+        white-space: nowrap;
+    }
+
+    .btn-sm {
+        padding: 3px 6px;
+        font-size: 0.65rem;
+        white-space: nowrap;
+    }
+
+    .view-file-btn, .btn-icon {
+        min-width: 28px;
+        min-height: 28px;
+        font-size: 0.8rem;
+    }
+
+    /* Ajuste específico para botones de subida */
+    .upload-btn {
+        white-space: nowrap;
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+
+    /* Asegurar que los elementos no se desborden */
+    .card-body {
+        padding: 8px;
+        overflow-x: hidden;
+    }
+
+    .turno-status {
+        margin-top: 6px;
+    }
+
+    .turno-status h4 {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+    }
+}
+
 /* Ajustes responsivos para móviles */
 @media (max-width: 768px) {
     /* Header más compacto */
@@ -1510,19 +1587,23 @@ body:not(.admin-user) .hero {
         margin-bottom: 4px;
     }
     
+    /* CORRECCIÓN ESPECÍFICA: Upload status en línea horizontal */
     .upload-status {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row !important;
+        align-items: center;
         gap: 4px;
+        overflow-x: auto;
     }
     
     .status-icons {
-        justify-content: center;
-        width: 100%;
+        justify-content: flex-end;
+        width: auto;
+        flex-shrink: 0;
     }
     
     .status-container {
-        justify-content: center;
+        justify-content: flex-start;
+        flex-shrink: 0;
     }
     
     /* Botones más grandes para touch */
@@ -1602,7 +1683,7 @@ body:not(.admin-user) .hero {
     
     .ctz-info h4,
     .ctz-horario {
-        text-align: center;
+        text-align: left;
     }
     
     /* Footer más compacto */
@@ -1676,39 +1757,43 @@ body:not(.admin-user) .hero {
         font-size: 0.65rem;
     }
     
+    /* CORRECCIÓN ESPECÍFICA: Ajustes para pantallas muy pequeñas */
+    .upload-status {
+        gap: 3px;
+        padding: 4px;
+    }
+    
+    .status {
+        min-width: 60px;
+        font-size: 0.6rem;
+        padding: 2px 4px;
+    }
+    
+    .file-date {
+        font-size: 0.55rem;
+    }
+    
+    .btn-sm {
+        padding: 2px 4px;
+        font-size: 0.6rem;
+    }
+    
+    .view-file-btn, .btn-icon {
+        min-width: 26px;
+        min-height: 26px;
+        font-size: 0.75rem;
+    }
+    
     /* Ajustes específicos para status en móviles pequeños */
     .status-icons {
-        flex-direction: column;
-        width: 100%;
-        gap: 3px;
+        flex-direction: row;
+        width: auto;
+        gap: 2px;
     }
     
     .status-icons .btn {
-        width: 100%;
-        margin: 1px 0;
-    }
-    
-    .upload-status {
-        gap: 3px;
-    }
-    
-    /* Destinatarios en móviles pequeños */
-    .destinatario-item {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: center;
-    }
-    
-    .destinatario-checkbox {
-        justify-content: center;
-    }
-    
-    .destinatario-actions {
-        justify-content: center;
-    }
-    
-    .destinatario-info {
-        flex-basis: 100%;
+        width: auto;
+        margin: 0;
     }
 }
 
@@ -1742,6 +1827,20 @@ body:not(.admin-user) .hero {
     .nav-tabs a {
         padding: 4px 6px;
         font-size: 0.65rem;
+    }
+    
+    /* CORRECCIÓN EXTREMA: Para pantallas muy pequeñas */
+    .upload-status {
+        font-size: 0.55rem;
+    }
+    
+    .status {
+        min-width: 55px;
+        font-size: 0.55rem;
+    }
+    
+    .file-date {
+        display: none; /* Ocultar fecha en pantallas muy pequeñas */
     }
 }
 
@@ -2226,5 +2325,25 @@ body.logged-in .main-content .tab-content.active {
         margin-top: 0 !important;
         margin-bottom: 4px !important;
         padding: 4px 6px !important;
+    }
+}
+
+/* Banner en móvil cuando NO hay usuario logueado */
+@media (max-width: 768px) {
+    body:not(.logged-in) .banner-container {
+        margin-top: 50px !important;
+        margin-bottom: -50px !important;
+    }
+}
+/* Login en móvil cuando está visible (no hay sesión) */
+@media (max-width: 768px) {
+    body:not(.logged-in) .login-container {
+        margin-top: 20px !important;
+        padding-top: 15px !important;
+    }
+    
+    /* Asegurar que el formulario de login tenga buen espaciado */
+    body:not(.logged-in) .login-box {
+        margin-top: 10px !important;
     }
 }
