@@ -1705,27 +1705,27 @@ $js_config = [
                         <div class="event-card">
                             <div class="event-image" style="background-image: url('assets/evento2.png')"></div>
                             <div class="event-content">
-                                <div class="event-date">16 de Septiembre, 2025</div>
-                                <h3 class="event-title">Independencia de México</h3>
-                                <p class="event-description">Actividades conmemorativas en las escuelas.</p>
+                                <div class="event-date">15 de Octubre, 2025.</div>
+                                <h3 class="event-title">Recuperando Aprendizajes Fundamentales.</h3>
+                                <p class="event-description">Exámen en todas las Secundarias.</p>
                                 <button class="btn btn-outline">Ver Detalles</button>
                             </div>
                         </div>
                         <div class="event-card">
                             <div class="event-image" style="background-image: url('assets/evento3.png')"></div>
                             <div class="event-content">
-                                <div class="event-date">23 de Septiembre, 2025</div>
-                                <h3 class="event-title">Junta Previa Primer CTE</h3>
-                                <p class="event-description">En sus correos podrán ver la Agenda.</p>
+                                <div class="event-date">22 de Octubre, 2025.</div>
+                                <h3 class="event-title">Junta Previa Segundo CTE 2025-2026.</h3>
+                                <p class="event-description">En sus correos podrán ver la "Agenda".</p>
                                 <button class="btn btn-outline">Ver Detalles</button>
                             </div>
                         </div>
                         <div class="event-card">
                             <div class="event-image" style="background-image: url('assets/evento1.png')"></div>
                             <div class="event-content">
-                                <div class="event-date">26 de Septiembre, 2025</div>
-                                <h3 class="event-title">Primer Consejo Técnico Escolar</h3>
-                                <p class="event-description">Recuerden. Tema: "Comunidad de Aprendizaje".</p>
+                                <div class="event-date">31 de Octubre, 2025.</div>
+                                <h3 class="event-title">Segundo Consejo Técnico Escolar 2025-2026.</h3>
+                                <p class="event-description">Mandar sus Temas a Elegir. Limite 27/10/2025</p>
                                 <button class="btn btn-outline">Ver Detalles</button>
                             </div>
                         </div>
@@ -1992,11 +1992,11 @@ $js_config = [
                         <h3>Próximas Sesiones</h3>
                         <div class="ctz-item">
                             <div class="ctz-fecha">
-                                <div class="ctz-dia">26</div>
-                                <div class="ctz-mes">Sep</div>
+                                <div class="ctz-dia">31</div>
+                                <div class="ctz-mes">Oct</div>
                             </div>
                             <div class="ctz-info">
-                                <h4>Primer CTE</h4>
+                                <h4>Segundo CTE</h4>
                                 <p class="ctz-horario">08:00 AM - 12:00 PM | En cada Escuela.</p>
                             </div>
                         </div>
